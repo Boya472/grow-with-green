@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mes Favoris - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .product-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .product-image {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .btn-remove-fav {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #dc3545;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .product-card:hover .btn-remove-fav {
+        opacity: 1;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold mb-3">Mes Favoris</h1>
+            <p class="fs-5">Retrouvez tous vos produits préférés</p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Stats -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <h2 class="text-primary">{{ stats.total }}</h2>
+                <p class="mb-0">Produits favoris</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <h2 class="text-success">{{ stats.disponibles }}</h2>
+                <p class="mb-0">Disponibles</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <h2 class="text-warning">{{ stats.rupture }}</h2>
+                <p class="mb-0">En rupture</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Products Grid -->
+    {% if produits_favoris %}
+    <div class="row g-4">
+        {% for produit in produits_favoris %}
+        <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card product-card h-100 shadow-sm">
+                <div class="product-image position-relative">
+                    {% if produit.image %}
+                    <img src="{{ produit.image.url }}" alt="{{ produit.nom }}" class="img-fluid w-100 h-100 object-fit-cover">
+                    {% else %}
+                    <div class="d-flex align-items-center justify-content-center bg-light h-100">
+                        <i class="fas fa-leaf fa-4x text-success opacity-25"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <a href="{% url 'boutique:ajouter_favoris' produit.pk %}" class="btn-remove-fav">
+                        <i class="fas fa-times"></i>
+                    </a>
+                    
+                    {% if produit.est_disponible %}
+                    <span class="badge bg-success position-absolute top-0 start-0 m-2">
+                        <i class="fas fa-check me-1"></i>En Stock
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger position-absolute top-0 start-0 m-2">
+                        <i class="fas fa-times me-1"></i>Rupture
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div class="card-body">
+                    <div class="mb-2">
+                        <span class="badge bg-light text-dark">{{ produit.legume.nom }}</span>
+                    </div>
+                    <h5 class="card-title fw-bold mb-2">
+                        <a href="{% url 'boutique:detail_produit' produit.pk %}" class="text-decoration-none text-dark">
+                            {{ produit.nom }}
+                        </a>
+                    </h5>
+                    <p class="card-text text-muted small mb-3">{{ produit.description|truncatewords:8 }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 class="text-primary mb-0">{{ produit.prix_b2c }} <small class="fs-6">FCFA</small></h4>
+                            <small class="text-muted">/kg</small>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted d-block">Pro</small>
+                            <span class="badge bg-warning text-dark">{{ produit.prix_b2b }} FCFA</span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-3">
+                        <a href="{% url 'boutique:detail_produit' produit.pk %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-eye me-2"></i>Détails
+                        </a>
+                        {% if produit.est_disponible %}
+                        <form action="{% url 'boutique:ajouter_au_panier' produit.pk %}" method="POST" class="w-100">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantite" value="1">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-shopping-cart me-2"></i>Ajouter
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-heart fa-5x text-muted mb-4 opacity-25"></i>
+        <h3 class="text-muted">Aucun produit favori</h3>
+        <p class="text-muted">Ajoutez des produits à vos favoris pour les retrouver facilement !</p>
+        <a href="{% url 'boutique:catalogue' %}" class="btn btn-primary rounded-pill px-4">
+            <i class="fas fa-store me-2"></i>Parcourir la boutique
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

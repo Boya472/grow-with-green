@@ -1,0 +1,601 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Boutique - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: 
+            /* Fond dégradé principal (violet avec transparence) */
+            linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%),
+            /* Motif de courge répété */
+            url("data:image/svg+xml,%3Csvg width='120' height='120' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23FF9800' fill-opacity='0.15'%3E%3Ccircle cx='60' cy='60' r='30'/%3E%3Ccircle cx='40' cy='40' r='15'/%3E%3Ccircle cx='80' cy='80' r='15'/%3E%3C/g%3E%3C/svg%3E"),
+            /* Motif d'aubergine répété */
+            url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%237B1FA2' fill-opacity='0.15'%3E%3Cellipse cx='50' cy='50' rx='25' ry='40'/%3E%3Ccircle cx='50' cy='20' r='8'/%3E%3C/g%3E%3C/svg%3E"),
+            /* Motif de gombo répété */
+            url("data:image/svg+xml,%3Csvg width='80' height='80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%234CAF50' fill-opacity='0.15'%3E%3Cpath d='M40 10 Q60 20 40 70 Q20 20 40 10 Z'/%3E%3C/g%3E%3C/svg%3E");
+        
+        background-size: 
+            auto,           /* Dégradé principal */
+            120px 120px,    /* Courge */
+            100px 100px,    /* Aubergine */
+            80px 80px;      /* Gombo */
+        
+        background-position: 
+            center center,
+            0 0,
+            50px 50px,
+            30px 30px;
+        
+        background-repeat: repeat, repeat, repeat, repeat;
+        padding: 120px 0 80px;
+        margin-top: 90px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Animation pour déplacer les motifs */
+    .page-header {
+        animation: slideMotifs 30s infinite linear;
+    }
+    
+    @keyframes slideMotifs {
+        0% {
+            background-position: 
+                center center,
+                0 0,
+                50px 50px,
+                30px 30px;
+        }
+        100% {
+            background-position: 
+                center center,
+                120px 120px,
+                150px 150px,
+                110px 110px;
+        }
+    }
+    
+    /* Conteneur pour les icônes de légumes */
+    .legume-decoration {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    
+    /* Icônes de légumes visibles */
+    .legume-icon {
+        position: absolute;
+        font-size: 4rem;
+        opacity: 0.25;
+        z-index: 1;
+        filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+        animation: bounce 8s infinite ease-in-out;
+    }
+    
+    /* Positions différentes pour chaque icône */
+    .legume-icon.courge {
+        top: 15%;
+        left: 5%;
+        color: #FF9800; /* Orange pour courge */
+        animation-delay: 0s;
+    }
+    
+    .legume-icon.aubergine {
+        top: 25%;
+        right: 10%;
+        color: #7B1FA2; /* Violet pour aubergine */
+        animation-delay: -2s;
+    }
+    
+    .legume-icon.gombo {
+        bottom: 20%;
+        left: 15%;
+        color: #4CAF50; /* Vert pour gombo */
+        animation-delay: -4s;
+    }
+    
+    .legume-icon.feuille-1 {
+        top: 60%;
+        right: 20%;
+        color: #8BC34A; /* Vert clair */
+        animation-delay: -1s;
+    }
+    
+    .legume-icon.feuille-2 {
+        bottom: 30%;
+        right: 5%;
+        color: #CDDC39; /* Vert jaune */
+        animation-delay: -3s;
+    }
+    
+    .legume-icon.feuille-3 {
+        top: 10%;
+        left: 80%;
+        color: #388E3C; /* Vert foncé */
+        animation-delay: -5s;
+    }
+    
+    /* Animation de rebond */
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg) scale(1);
+        }
+        25% {
+            transform: translateY(-20px) rotate(5deg) scale(1.1);
+        }
+        50% {
+            transform: translateY(10px) rotate(-5deg) scale(0.9);
+        }
+        75% {
+            transform: translateY(-10px) rotate(2deg) scale(1.05);
+        }
+    }
+    
+    /* Effet de brillance sur les icônes */
+    .legume-icon::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse 4s infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.6; }
+    }
+    
+    /* Contenu textuel avec z-index élevé */
+    .page-header .container {
+        position: relative;
+        z-index: 10;
+    }
+    
+    /* Amélioration du titre */
+    .page-header h1 {
+        text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+        position: relative;
+        z-index: 11;
+        margin-bottom: 1rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+    }
+    
+    .page-header p {
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 11;
+        font-size: 1.2rem;
+        opacity: 0.95;
+    }
+    
+    /* Amélioration du breadcrumb */
+    .page-header .breadcrumb {
+        position: relative;
+        z-index: 11;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(5px);
+        border-radius: 50px;
+        padding: 10px 25px;
+        display: inline-block;
+        margin-top: 20px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .page-header .breadcrumb-item a {
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .page-header .breadcrumb-item a:hover {
+        color: white;
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+    
+    .page-header .breadcrumb-item.active {
+        color: rgba(255,255,255,0.7);
+    }
+    
+    /* Lignes décoratives */
+    .decoration-line {
+        position: absolute;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        z-index: 2;
+    }
+    
+    .line-1 {
+        top: 25%;
+        left: 10%;
+        right: 10%;
+        animation: slideLine 15s infinite linear;
+    }
+    
+    .line-2 {
+        top: 65%;
+        left: 15%;
+        right: 15%;
+        animation: slideLine 20s infinite linear reverse;
+    }
+    
+    @keyframes slideLine {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    
+    /* Reste de votre CSS existant */
+    .filter-sidebar {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 110px;
+    }
+    
+    .product-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        background: white;
+    }
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .product-image {
+        height: 280px;
+        overflow: hidden;
+        position: relative;
+    }
+    .product-image img {
+        transition: transform 0.3s ease;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .product-card:hover .product-image img {
+        transform: scale(1.1);
+    }
+    
+    .badge-stock {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        z-index: 10;
+        padding: 8px 15px;
+    }
+    
+    .btn-quick-view {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .product-card:hover .btn-quick-view {
+        opacity: 1;
+    }
+    
+    .product-rating {
+        color: #ffc107;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header avec motifs visibles -->
+<div class="page-header">
+    <!-- Décorations de légumes -->
+    <div class="legume-decoration">
+        <i class="fas fa-apple-alt legume-icon courge"></i>
+        <i class="fas fa-eggplant legume-icon aubergine"></i>
+        <i class="fas fa-pepper-hot legume-icon gombo"></i>
+        <i class="fas fa-leaf legume-icon feuille-1"></i>
+        <i class="fas fa-seedling legume-icon feuille-2"></i>
+        <i class="fas fa-spa legume-icon feuille-3"></i>
+        
+        <!-- Lignes décoratives -->
+        <div class="decoration-line line-1"></div>
+        <div class="decoration-line line-2"></div>
+    </div>
+    
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold mb-3">Notre Boutique</h1>
+            <p class="fs-5 mb-4">Découvrez tous nos légumes premium</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Accueil</a></li>
+                    <li class="breadcrumb-item active text-white">Boutique</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Le reste de votre contenu reste identique -->
+
+
+<!-- Le reste de votre contenu reste identique -->
+<div class="container my-5">
+    <div class="row">
+        <!-- Sidebar Filters -->
+        <div class="col-lg-3 mb-4">
+            <div class="filter-sidebar">
+                <h5 class="fw-bold mb-4">
+                    <i class="fas fa-filter me-2 text-primary"></i>Filtres
+                </h5>
+                
+                <!-- Catégories -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Catégories</h6>
+                    {% if categories %}
+                        {% for categorie in categories %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input categorie-checkbox filter-checkbox" 
+                                   type="checkbox" 
+                                   id="cat-{{ categorie.id }}"
+                                   value="{{ categorie.nom|slugify }}"
+                                   data-legume-id="{{ categorie.id }}"
+                                   checked>
+                            <label class="form-check-label" for="cat-{{ categorie.id }}">
+                                {{ categorie.nom }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <!-- Catégories par défaut -->
+                        <div class="form-check mb-2">
+                            <input class="form-check-input categorie-checkbox filter-checkbox" 
+                                   type="checkbox" 
+                                   id="cat-courges"
+                                   value="courges"
+                                   checked>
+                            <label class="form-check-label" for="cat-courges">
+                                Courges
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input categorie-checkbox filter-checkbox" 
+                                   type="checkbox" 
+                                   id="cat-gombo"
+                                   value="gombo"
+                                   checked>
+                            <label class="form-check-label" for="cat-gombo">
+                                Gombo
+                            </label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input categorie-checkbox filter-checkbox" 
+                                   type="checkbox" 
+                                   id="cat-aubergines"
+                                   value="aubergines"
+                                   checked>
+                            <label class="form-check-label" for="cat-aubergines">
+                                Aubergines
+                            </label>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Disponibilité -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Disponibilité</h6>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input dispo-checkbox filter-checkbox" 
+                               type="checkbox" 
+                               id="en-stock" 
+                               value="en-stock" 
+                               checked>
+                        <label class="form-check-label" for="en-stock">
+                            <i class="fas fa-check-circle text-success me-1"></i>En stock
+                        </label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input dispo-checkbox filter-checkbox" 
+                               type="checkbox" 
+                               id="rupture" 
+                               value="rupture" 
+                               checked>
+                        <label class="form-check-label" for="rupture">
+                            <i class="fas fa-times-circle text-danger me-1"></i>En rupture
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Prix Range -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">Prix (FCFA/kg)</h6>
+                    <input type="range" class="form-range" min="1000" max="5000" step="100" 
+                           id="priceRange" value="5000">
+                    <div class="d-flex justify-content-between">
+                        <small>1000 FCFA</small>
+                        <small id="priceValue">5000 FCFA</small>
+                    </div>
+                </div>
+                
+                <button id="reset-filters" class="btn btn-primary w-100 rounded-pill">
+                    <i class="fas fa-sync me-2"></i>Réinitialiser
+                </button>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <!-- Toolbar -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="mb-0" id="produit-count">{{ produits|length }} produit(s) disponible(s)</h5>
+                </div>
+                <div class="d-flex gap-2">
+                    <select class="form-select" id="tri-select" style="width: auto;">
+                        <option value="pertinence">Trier par: Pertinence</option>
+                        <option value="prix-croissant">Prix croissant</option>
+                        <option value="prix-decissant">Prix décroissant</option>
+                        <option value="nom-az">Nom A-Z</option>
+                        <option value="note">Meilleures notes</option>
+                    </select>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary active">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Products Container -->
+            <div class="row g-4" id="produits-container">
+                {% for produit in produits %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card product-card h-100 shadow-sm">
+                        <div class="product-image position-relative">
+                            {% if produit.est_disponible %}
+                            <span class="badge bg-success badge-stock">
+                                <i class="fas fa-check me-1"></i>En Stock
+                            </span>
+                            {% else %}
+                            <span class="badge bg-danger badge-stock">
+                                <i class="fas fa-times me-1"></i>Rupture
+                            </span>
+                            {% endif %}
+                            
+                            {% if produit.image %}
+                            <img src="{{ produit.image.url }}" alt="{{ produit.nom }}" class="img-fluid">
+                            {% else %}
+                            <div class="d-flex align-items-center justify-content-center bg-light" style="height: 280px;">
+                                <i class="fas fa-leaf fa-5x text-success opacity-25"></i>
+                            </div>
+                            {% endif %}
+                            
+                            <a href="{% url 'boutique:detail_produit' produit.pk %}" class="btn btn-primary btn-sm rounded-pill btn-quick-view">
+                                <i class="fas fa-eye me-2"></i>Voir détails
+                            </a>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-light text-dark">{{ produit.legume.nom }}</span>
+                                {% if produit.note_moyenne > 0 %}
+                                <div class="product-rating">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= produit.note_moyenne %}
+                                            <i class="fas fa-star"></i>
+                                        {% else %}
+                                            <i class="far fa-star"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <small class="text-muted ms-1">({{ produit.nombre_avis }})</small>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <h5 class="card-title fw-bold mb-2">
+                                <a href="{% url 'boutique:detail_produit' produit.pk %}" class="text-decoration-none text-dark">
+                                    {{ produit.nom }}
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted small mb-3">{{ produit.description|truncatewords:10 }}</p>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h4 class="text-primary mb-0">{{ produit.prix_b2c }} <small class="fs-6">FCFA</small></h4>
+                                    <small class="text-muted">par kg (particuliers)</small>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted d-block">Prix professionnels</small>
+                                    <span class="badge bg-warning text-dark">{{ produit.prix_b2b }} FCFA</span>
+                                </div>
+                            </div>
+                            
+                            {% if produit.stock_disponible %}
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-box-open me-1"></i>
+                                    Stock disponible: {{ produit.stock_disponible }} kg
+                                </small>
+                                <div class="progress mt-1" style="height: 4px;">
+                                    <div class="progress-bar bg-success" style="width: 70%"></div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'boutique:detail_produit' produit.pk %}" class="btn btn-outline-primary w-100 rounded-pill">
+                                    <i class="fas fa-eye me-2"></i>Détails
+                                </a>
+                                {% if produit.est_disponible %}
+                                <form action="{% url 'boutique:ajouter_au_panier' produit.pk %}" method="POST" class="w-100">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantite" value="1">
+                                    <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                                        <i class="fas fa-shopping-cart me-2"></i>Ajouter
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button class="btn btn-secondary w-100 rounded-pill" disabled>
+                                    <i class="fas fa-clock me-2"></i>Rupture
+                                </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="text-center py-5">
+                        <i class="fas fa-shopping-basket fa-5x text-muted mb-4 opacity-25"></i>
+                        <h3 class="text-muted">Aucun produit disponible</h3>
+                        <p class="text-muted">Nos produits seront bientôt disponibles. Revenez plus tard !</p>
+                        <a href="{% url 'index' %}" class="btn btn-primary rounded-pill px-4">
+                            Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if produits %}
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link rounded-pill me-2">Précédent</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link rounded-circle">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded-circle">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded-circle">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link rounded-pill ms-2">Suivant</a>
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+<!-- Catalogue Section -->

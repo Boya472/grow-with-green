@@ -1,0 +1,504 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ produit.nom }} - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .product-image-main {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        position: relative;
+        height: 500px;
+        background: white;
+    }
+    
+    .product-image-main img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .product-image-main:hover img {
+        transform: scale(1.1);
+    }
+    
+    .product-info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 110px;
+    }
+    
+    .price-tag {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .quantity-btn {
+        width: 40px;
+        height: 40px;
+        border: 2px solid #667eea;
+        background: white;
+        color: #667eea;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .quantity-btn:hover {
+        background: #667eea;
+        color: white;
+    }
+    
+    .quantity-input {
+        width: 80px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 8px;
+    }
+    
+    .feature-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #f8f9fa;
+        border-radius: 50px;
+        margin: 5px;
+    }
+    
+    .tab-content-custom {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .review-card {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .stock-bar {
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .stock-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'boutique:catalogue' %}" class="text-white">Boutique</a></li>
+                <li class="breadcrumb-item active text-white">{{ produit.nom }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Product Detail -->
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Image Section -->
+        <div class="col-lg-6">
+            <div class="product-image-main">
+                {% if produit.image %}
+                <img src="{{ produit.image.url }}" alt="{{ produit.nom }}" id="mainImage">
+                {% else %}
+                <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                    <i class="fas fa-leaf fa-5x text-success opacity-25"></i>
+                </div>
+                {% endif %}
+                
+                {% if produit.est_disponible %}
+                <span class="badge bg-success position-absolute top-0 start-0 m-3 px-3 py-2">
+                    <i class="fas fa-check me-2"></i>En Stock
+                </span>
+                {% else %}
+                <span class="badge bg-danger position-absolute top-0 start-0 m-3 px-3 py-2">
+                    <i class="fas fa-times me-2"></i>Rupture de Stock
+                </span>
+                {% endif %}
+            </div>
+            
+            <!-- Features -->
+            <div class="mt-4 text-center">
+                <span class="feature-badge">
+                    <i class="fas fa-leaf text-success"></i>
+                    <span>100% Naturel</span>
+                </span>
+                <span class="feature-badge">
+                    <i class="fas fa-certificate text-warning"></i>
+                    <span>Qualité Premium</span>
+                </span>
+                <span class="feature-badge">
+                    <i class="fas fa-truck text-primary"></i>
+                    <span>Livraison 24-48h</span>
+                </span>
+            </div>
+        </div>
+        
+        <!-- Product Info -->
+        <div class="col-lg-6">
+            <div class="product-info-card">
+                <div class="mb-3">
+                    <span class="badge bg-light text-dark px-3 py-2">{{ produit.legume.get_nom_display }}</span>
+                </div>
+                
+                <h1 class="display-5 fw-bold mb-3">{{ produit.nom }}</h1>
+                
+                <!-- Rating -->
+                <div class="mb-3">
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <i class="fas fa-star text-warning"></i>
+                    <span class="ms-2 text-muted">(24 avis)</span>
+                </div>
+                
+                <p class="text-muted fs-5 mb-4">{{ produit.description }}</p>
+                
+                <!-- Price -->
+                <div class="price-tag">
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <small class="d-block opacity-75">Prix Particulier (B2C)</small>
+                            <h2 class="mb-0">{{ produit.prix_b2c }} FCFA</h2>
+                            <small>par kilogramme</small>
+                        </div>
+                        <div class="col-6 text-end">
+                            <small class="d-block opacity-75">Prix Professionnel (B2B)</small>
+                            <h3 class="mb-0">{{ produit.prix_b2b }} FCFA</h3>
+                            <small>par kg</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stock Info -->
+                {% if stock %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">
+                            <i class="fas fa-box-open me-2"></i>Stock disponible
+                        </span>
+                        <span class="fw-bold text-success">{{ stock.quantite_disponible }} kg</span>
+                    </div>
+                    <div class="stock-bar">
+                        <div class="stock-bar-fill" style="width: 70%"></div>
+                    </div>
+                    {% if stock.est_en_alerte %}
+                    <small class="text-warning">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Stock faible
+                    </small>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                <!-- Quantity Selector -->
+<!-- Dans la section des boutons d'action -->
+{% if produit.est_disponible %}
+<form method="post" action="{% url 'boutique:ajouter_au_panier' produit.pk %}" id="addToCartForm">
+    {% csrf_token %}
+    <div class="mb-4">
+        <label class="form-label fw-bold mb-3">Quantité (kg)</label>
+        <div class="quantity-selector">
+            <button type="button" class="quantity-btn" onclick="decreaseQuantity()">-</button>
+            <input type="number" name="quantite" id="quantite" class="quantity-input" value="1" min="1" max="{{ stock.quantite_disponible|default:100 }}" step="0.5">
+            <button type="button" class="quantity-btn" onclick="increaseQuantity()">+</button>
+            <span class="text-muted ms-3">Max: {{ stock.quantite_disponible|default:100 }} kg</span>
+        </div>
+    </div>
+    
+    <!-- Add to Cart Button -->
+    <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-primary btn-lg rounded-pill py-3">
+            <i class="fas fa-shopping-cart me-2"></i>Ajouter au Panier
+        </button>
+    </div>
+</form>
+
+<!-- Favoris Button (Formulaire séparé) -->
+<form method="post" action="{% url 'boutique:ajouter_favoris' produit.pk %}" id="addToFavoritesForm">
+    {% csrf_token %}
+    <div class="d-grid gap-2 mt-2">
+        <button type="submit" class="btn btn-outline-primary btn-lg rounded-pill">
+            <i class="fas fa-heart me-2"></i>
+            {% if est_favori %}
+                Retirer des Favoris
+            {% else %}
+                Ajouter aux Favoris
+            {% endif %}
+        </button>
+    </div>
+</form>
+
+{% else %}
+<div class="alert alert-danger rounded-3">
+    <i class="fas fa-exclamation-circle me-2"></i>
+    Ce produit est actuellement en rupture de stock
+</div>
+{% endif %}
+                <!-- Additional Info -->
+                <div class="mt-4 pt-4 border-top">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">SKU:</span>
+                        <span class="fw-bold">GWG-{{ produit.pk }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Catégorie:</span>
+                        <span class="fw-bold">{{ produit.legume.get_nom_display }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Origine:</span>
+                        <span class="fw-bold">Attinguié, Côte d'Ivoire</span>
+                    </div>
+                </div>
+                
+                <!-- Share -->
+                <div class="mt-4 pt-4 border-top">
+                    <p class="text-muted mb-2">Partager:</p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="btn btn-outline-primary rounded-circle">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-info rounded-circle">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-success rounded-circle">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-danger rounded-circle">
+                            <i class="fab fa-pinterest"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tabs Section -->
+    <div class="mt-5">
+        <ul class="nav nav-tabs nav-fill" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#description">
+                    <i class="fas fa-info-circle me-2"></i>Description
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#nutrition">
+                    <i class="fas fa-heartbeat me-2"></i>Informations Nutritionnelles
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#reviews">
+                    <i class="fas fa-star me-2"></i>Avis Clients (24)
+                </a>
+            </li>
+        </ul>
+        
+        <div class="tab-content mt-4">
+            <!-- Description Tab -->
+            <div id="description" class="tab-pane fade show active">
+                <div class="tab-content-custom">
+                    <h3 class="mb-4">Description du produit</h3>
+                    <p class="text-muted fs-5 mb-4">{{ produit.description }}</p>
+                    
+                    <h5 class="mb-3">Caractéristiques :</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Cultivé à Attinguié (2000 m²)</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>100% naturel, sans pesticides</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Fraîcheur garantie</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Cycle de culture : {{ produit.legume.cycle_jours }} jours</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Adapté aux communautés expatriées</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Nutrition Tab -->
+            <div id="nutrition" class="tab-pane fade">
+                <div class="tab-content-custom">
+                    <h3 class="mb-4">Informations Nutritionnelles</h3>
+                    <p class="text-muted mb-4">Valeurs nutritionnelles pour 100g de {{ produit.nom }}</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <div class="d-flex justify-content-between">
+                                    <span>Calories</span>
+                                    <strong>25 kcal</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <div class="d-flex justify-content-between">
+                                    <span>Protéines</span>
+                                    <strong>1.5 g</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <div class="d-flex justify-content-between">
+                                    <span>Glucides</span>
+                                    <strong>5 g</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="bg-light p-3 rounded">
+                                <div class="d-flex justify-content-between">
+                                    <span>Fibres</span>
+                                    <strong>2 g</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Tab -->
+            <div id="reviews" class="tab-pane fade">
+                <div class="tab-content-custom">
+                    <h3 class="mb-4">Avis Clients</h3>
+                    
+                    <!-- Review Summary -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 text-center">
+                            <h1 class="display-3 fw-bold text-warning">4.8</h1>
+                            <div class="mb-2">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="text-muted">Basé sur 24 avis</p>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="mb-2">
+                                <span class="me-2">5 étoiles</span>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 80%"></div>
+                                </div>
+                                <span class="ms-2">20</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="me-2">4 étoiles</span>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 15%"></div>
+                                </div>
+                                <span class="ms-2">3</span>
+                            </div>
+                            <div class="mb-2">
+                                <span class="me-2">3 étoiles</span>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-warning" style="width: 5%"></div>
+                                </div>
+                                <span class="ms-2">1</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Individual Reviews -->
+                    <div class="review-card">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Marie K.</h6>
+                                <div>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">Il y a 2 jours</small>
+                        </div>
+                        <p class="mb-0">Excellente qualité ! Les légumes sont toujours frais et la livraison est rapide. Je recommande vivement.</p>
+                    </div>
+                    
+                    <div class="review-card">
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <h6 class="mb-1 fw-bold">Restaurant SOCOCE</h6>
+                                <div>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                            <small class="text-muted">Il y a 5 jours</small>
+                        </div>
+                        <p class="mb-0">Parfait pour notre restaurant. Qualité constante et prix B2B très compétitifs.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function increaseQuantity() {
+    const input = document.getElementById('quantite');
+    const max = parseFloat(input.max);
+    const step = parseFloat(input.step);
+    const current = parseFloat(input.value);
+    if (current + step <= max) {
+        input.value = (current + step).toFixed(1);
+    }
+}
+
+function decreaseQuantity() {
+    const input = document.getElementById('quantite');
+    const min = parseFloat(input.min);
+    const step = parseFloat(input.step);
+    const current = parseFloat(input.value);
+    if (current - step >= min) {
+        input.value = (current - step).toFixed(1);
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,162 @@
+/* static/css/custom_jazzmin.css */
+
+/* Variables de couleur vert feuille */
+:root {
+    --vert-feuille: #2d5016;
+    --vert-clair: #4a7c2c;
+    --vert-tres-clair: #6aa84f;
+    --vert-pale: #a8d08d;
+}
+
+/* Arrière-plan principal */
+body {
+    background-color: #f0f5ec !important;
+}
+
+/* Sidebar - Fond vert feuille */
+.main-sidebar {
+    background-color: var(--vert-feuille) !important;
+}
+
+/* Logo/Brand area */
+.brand-link {
+    background-color: var(--vert-feuille) !important;
+    border-bottom: 1px solid var(--vert-clair) !important;
+}
+
+.brand-link .brand-text {
+    color: white !important;
+}
+
+/* Navigation dans la sidebar */
+.nav-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.nav-sidebar .nav-link:hover {
+    background-color: var(--vert-clair) !important;
+    color: white !important;
+}
+
+.nav-sidebar .nav-link.active {
+    background-color: var(--vert-tres-clair) !important;
+    color: white !important;
+}
+
+/* Icônes dans la sidebar */
+.nav-icon {
+    color: var(--vert-pale) !important;
+}
+
+.nav-link.active .nav-icon {
+    color: white !important;
+}
+
+/* Header/Navbar */
+.main-header {
+    background-color: white !important;
+    border-bottom: 3px solid var(--vert-feuille) !important;
+}
+
+/* Boutons primaires - Vert feuille */
+.btn-primary,
+.btn-success {
+    background-color: var(--vert-clair) !important;
+    border-color: var(--vert-feuille) !important;
+    color: white !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+    background-color: var(--vert-feuille) !important;
+    border-color: var(--vert-feuille) !important;
+}
+
+/* Cartes/Cards sur le dashboard */
+.card-header {
+    background-color: var(--vert-tres-clair) !important;
+    color: white !important;
+}
+
+.card {
+    border-top: 3px solid var(--vert-clair) !important;
+}
+
+/* Liens */
+a {
+    color: var(--vert-clair) !important;
+}
+
+a:hover {
+    color: var(--vert-feuille) !important;
+}
+
+/* Accent sur les info-box */
+.info-box-icon {
+    background-color: var(--vert-clair) !important;
+}
+
+/* Small-box (statistiques) */
+.small-box {
+    border-radius: 8px !important;
+}
+
+.small-box.bg-success {
+    background-color: var(--vert-clair) !important;
+}
+
+/* Tables */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(106, 168, 79, 0.05) !important;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+    background-color: var(--vert-clair) !important;
+    border-color: var(--vert-feuille) !important;
+}
+
+/* Messages d'alerte success */
+.alert-success {
+    background-color: var(--vert-pale) !important;
+    border-color: var(--vert-clair) !important;
+    color: var(--vert-feuille) !important;
+}
+
+/* Formulaires - Focus */
+.form-control:focus {
+    border-color: var(--vert-clair) !important;
+    box-shadow: 0 0 0 0.2rem rgba(106, 168, 79, 0.25) !important;
+}
+
+/* Checkboxes personnalisées */
+.custom-control-input:checked ~ .custom-control-label::before {
+    background-color: var(--vert-clair) !important;
+    border-color: var(--vert-feuille) !important;
+}
+
+/* Onglets */
+.nav-tabs .nav-link.active {
+    border-top: 3px solid var(--vert-clair) !important;
+}
+
+/* Footer */
+.main-footer {
+    background-color: white !important;
+    border-top: 1px solid var(--vert-pale) !important;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    border-top: 2px solid var(--vert-clair) !important;
+}
+
+/* Badge */
+.badge-success {
+    background-color: var(--vert-clair) !important;
+}
+
+/* Progress bar */
+.progress-bar {
+    background-color: var(--vert-clair) !important;
+}

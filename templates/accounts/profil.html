@@ -1,0 +1,374 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mon Profil - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .profile-sidebar {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 110px;
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 48px;
+        position: relative;
+    }
+    
+    .avatar-upload {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 40px;
+        height: 40px;
+        background: white;
+        border-radius: 50%;
+        border: 3px solid #667eea;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #667eea;
+    }
+    
+    .profile-content {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+    
+    .nav-tabs-custom {
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 30px;
+    }
+    
+    .nav-tabs-custom .nav-link {
+        border: none;
+        color: #666;
+        padding: 15px 25px;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-tabs-custom .nav-link:hover {
+        color: #667eea;
+    }
+    
+    .nav-tabs-custom .nav-link.active {
+        color: #667eea;
+        border-bottom: 3px solid #667eea;
+        font-weight: 600;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 25px;
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .badge-type {
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold mb-3">Mon Profil</h1>
+            <p class="fs-5">Gérez vos informations personnelles</p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="profile-sidebar">
+                <!-- Avatar -->
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                    <div class="avatar-upload">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+                
+                <!-- User Info -->
+                <div class="text-center mb-4">
+                    <h4 class="mb-2">{{ user.get_full_name }}</h4>
+                    <p class="text-muted mb-3">@{{ user.username }}</p>
+                    {% if user.user_type == 'B2C' %}
+                    <span class="badge badge-type bg-success">
+                        <i class="fas fa-user me-2"></i>Particulier
+                    </span>
+                    {% elif user.user_type == 'B2B' %}
+                    <span class="badge badge-type bg-warning text-dark">
+                        <i class="fas fa-building me-2"></i>Professionnel
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <!-- Quick Stats -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <h3 class="mb-2">12</h3>
+                            <small>Commandes</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="stat-card">
+                            <h3 class="mb-2">50K</h3>
+                            <small>FCFA dépensés</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'commandes:mes_commandes' %}" class="list-group-item list-group-item-action border-0">
+                        <i class="fas fa-shopping-bag me-3 text-primary"></i>Mes commandes
+                    </a>
+                    <a href="{% url 'boutique:mes_favoris' %}" class="list-group-item list-group-item-action border-0">
+                        <i class="fas fa-heart me-3 text-danger"></i>Mes favoris
+                    </a>
+                    <a href="{% url 'accounts:notifications' %}" class="list-group-item list-group-item-action border-0">
+                        <i class="fas fa-bell me-3 text-warning"></i>Notifications
+                    </a>
+                    <a href="{% url 'accounts:logout' %}" class="list-group-item list-group-item-action border-0 text-danger">
+                        <i class="fas fa-sign-out-alt me-3"></i>Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Tabs -->
+            <ul class="nav nav-tabs nav-tabs-custom" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#infos">
+                        <i class="fas fa-user me-2"></i>Informations personnelles
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#security">
+                        <i class="fas fa-lock me-2"></i>Sécurité
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" href="#preferences">
+                        <i class="fas fa-cog me-2"></i>Préférences
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="tab-content">
+                <!-- Personal Info Tab -->
+                <div id="infos" class="tab-pane fade show active">
+                    <div class="profile-content">
+                        <h4 class="mb-4">Informations personnelles</h4>
+                        
+                        <form method="post">
+                            {% csrf_token %}
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Prénom</label>
+                                    <input type="text" name="first_name" class="form-control form-control-lg" value="{{ user.first_name }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Nom</label>
+                                    <input type="text" name="last_name" class="form-control form-control-lg" value="{{ user.last_name }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <input type="email" name="email" class="form-control form-control-lg" value="{{ user.email }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Téléphone</label>
+                                    <input type="tel" name="telephone" class="form-control form-control-lg" value="{{ user.telephone }}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Adresse</label>
+                                    <textarea name="adresse" class="form-control" rows="3">{{ user.adresse }}</textarea>
+                                </div>
+                                
+                                {% if user.user_type == 'B2B' %}
+                                <div class="col-12">
+                                    <hr class="my-4">
+                                    <h5 class="mb-3"><i class="fas fa-building me-2 text-primary"></i>Informations professionnelles</h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Nom de l'entreprise</label>
+                                    <input type="text" name="nom_entreprise" class="form-control form-control-lg" value="{{ user.nom_entreprise }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Secteur d'activité</label>
+                                    <input type="text" name="secteur_activite" class="form-control form-control-lg" value="{{ user.secteur_activite }}">
+                                </div>
+                                <div class="col-12">
+                                    <div class="alert alert-{% if user.compte_valide %}success{% else %}warning{% endif %} rounded-3">
+                                        <i class="fas fa-{% if user.compte_valide %}check-circle{% else %}clock{% endif %} me-2"></i>
+                                        {% if user.compte_valide %}
+                                            Votre compte professionnel est validé
+                                        {% else %}
+                                            Votre compte est en attente de validation (24-48h)
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                                    <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Security Tab -->
+                <div id="security" class="tab-pane fade">
+                    <div class="profile-content">
+                        <h4 class="mb-4">Sécurité et mot de passe</h4>
+                        
+                        <form>
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Mot de passe actuel</label>
+                                    <input type="password" class="form-control form-control-lg">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Nouveau mot de passe</label>
+                                    <input type="password" class="form-control form-control-lg">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Confirmer le nouveau mot de passe</label>
+                                    <input type="password" class="form-control form-control-lg">
+                                </div>
+                            </div>
+                            
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                                    <i class="fas fa-key me-2"></i>Changer le mot de passe
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <hr class="my-5">
+                        
+                        <!-- Two-Factor Authentication -->
+                        <div class="d-flex justify-content-between align-items-center p-4 bg-light rounded-3">
+                            <div>
+                                <h6 class="mb-2">Authentification à deux facteurs</h6>
+                                <p class="text-muted mb-0 small">Ajoutez une couche de sécurité supplémentaire</p>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" style="width: 60px; height: 30px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preferences Tab -->
+                <div id="preferences" class="tab-pane fade">
+                    <div class="profile-content">
+                        <h4 class="mb-4">Préférences</h4>
+                        
+                        <h6 class="mb-3">Notifications</h6>
+                        
+                        <div class="d-flex justify-content-between align-items-center p-3 mb-2 bg-light rounded">
+                            <div>
+                                <p class="mb-1 fw-bold">Notifications par email</p>
+                                <small class="text-muted">Recevoir les mises à jour par email</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center p-3 mb-2 bg-light rounded">
+                            <div>
+                                <p class="mb-1 fw-bold">Promotions et offres</p>
+                                <small class="text-muted">Recevoir les offres spéciales</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center p-3 mb-4 bg-light rounded">
+                            <div>
+                                <p class="mb-1 fw-bold">Mises à jour de commande</p>
+                                <small class="text-muted">Suivre l'état de vos commandes</small>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" checked>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h6 class="mb-3">Langue et région</h6>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Langue</label>
+                                <select class="form-select form-select-lg">
+                                    <option>Français</option>
+                                    <option>English</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Devise</label>
+                                <select class="form-select form-select-lg">
+                                    <option>FCFA</option>
+                                    <option>EUR</option>
+                                    <option>USD</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="text-end mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
+                                <i class="fas fa-save me-2"></i>Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

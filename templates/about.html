@@ -1,0 +1,475 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}À Propos - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 120px 0 80px;
+        margin-top: 90px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .page-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .mission-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+        transition: transform 0.3s ease;
+    }
+    
+    .mission-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .mission-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        color: white;
+        font-size: 36px;
+    }
+    
+    .timeline {
+        position: relative;
+        padding: 50px 0;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: translateX(-50%);
+    }
+    
+    .timeline-item {
+        margin-bottom: 50px;
+        position: relative;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+        margin-right: calc(50% + 50px);
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content {
+        margin-left: calc(50% + 50px);
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        left: 50%;
+        top: 20px;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border: 4px solid #667eea;
+        border-radius: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+    }
+    
+    .timeline-content {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .team-member {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    .team-avatar {
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 60px;
+        border: 5px solid white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .value-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 40px;
+        color: white;
+        text-align: center;
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
+    
+    .value-card:hover {
+        transform: scale(1.05);
+    }
+    
+    .stats-counter {
+        font-size: 48px;
+        font-weight: bold;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-3 fw-bold mb-4">À Propos de Nous</h1>
+            <p class="fs-4 mb-0">Cultivons ensemble un avenir plus vert</p>
+        </div>
+    </div>
+</div>
+
+<!-- Story Section -->
+<div class="container my-5 py-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <div class="position-relative">
+                <img src="{% static 'img/About.jpg' %}" class="img-fluid rounded-3 shadow-lg" 
+                     onerror="this.src='https://via.placeholder.com/600x400/28a745/ffffff?text=Grow+With+Green'"
+                     alt="Grow With Green">
+                <div class="position-absolute bottom-0 start-0 bg-primary text-white p-4 m-4 rounded-3">
+                    <h3 class="mb-0">10+</h3>
+                    <p class="mb-0">Années d'expertise</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <span class="badge bg-success px-4 py-2 mb-3">Notre Histoire</span>
+            <h2 class="display-5 fw-bold mb-4">Grow With Green</h2>
+            <p class="fs-5 text-muted mb-4">
+                Fondée en 2015 à Attinguié, Grow With Green est née d'une passion pour l'agriculture durable 
+                et d'un engagement envers la qualité. Nous sommes spécialisés dans la culture de légumes 
+                premium destinés aux communautés expatriées et aux particuliers en Côte d'Ivoire.
+            </p>
+            <p class="text-muted mb-4">
+                Notre exploitation de 2000 m² produit des courges, gombo et aubergines de qualité supérieure, 
+                cultivés selon des méthodes respectueuses de l'environnement. Nous croyons qu'une agriculture 
+                responsable est la clé d'un avenir meilleur.
+            </p>
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                        <span>100% Naturel</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                        <span>Qualité Premium</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                        <span>Livraison Rapide</span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success fa-2x me-3"></i>
+                        <span>Prix Compétitifs</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mission Section -->
+<div class="bg-light py-5">
+    <div class="container my-5">
+        <div class="text-center mb-5">
+            <span class="badge bg-success px-4 py-2 mb-3">Notre Mission</span>
+            <h2 class="display-5 fw-bold mb-4">Ce qui nous anime</h2>
+            <p class="fs-5 text-muted">Notre engagement pour une agriculture durable et de qualité</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="mission-card text-center">
+                    <div class="mission-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h4 class="mb-3">Agriculture Durable</h4>
+                    <p class="text-muted mb-0">
+                        Nous pratiquons une agriculture respectueuse de l'environnement, sans produits 
+                        chimiques nocifs, pour préserver notre planète pour les générations futures.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mission-card text-center">
+                    <div class="mission-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h4 class="mb-3">Qualité Excellence</h4>
+                    <p class="text-muted mb-0">
+                        Chaque légume est cultivé avec soin et attention pour garantir une qualité 
+                        supérieure qui répond aux standards internationaux les plus élevés.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="mission-card text-center">
+                    <div class="mission-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="mb-3">Satisfaction Client</h4>
+                    <p class="text-muted mb-0">
+                        Notre priorité est votre satisfaction. Nous offrons un service personnalisé 
+                        et des produits frais livrés rapidement à votre porte.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Values Section -->
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <span class="badge bg-success px-4 py-2 mb-3">Nos Valeurs</span>
+        <h2 class="display-5 fw-bold mb-4">Ce en quoi nous croyons</h2>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="value-card">
+                <i class="fas fa-shield-alt fa-3x mb-4"></i>
+                <h5 class="mb-3">Intégrité</h5>
+                <p class="mb-0">Honnêteté et transparence dans toutes nos actions</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="value-card">
+                <i class="fas fa-lightbulb fa-3x mb-4"></i>
+                <h5 class="mb-3">Innovation</h5>
+                <p class="mb-0">Adoption des meilleures pratiques agricoles modernes</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="value-card">
+                <i class="fas fa-handshake fa-3x mb-4"></i>
+                <h5 class="mb-3">Engagement</h5>
+                <p class="mb-0">Dédication totale envers nos clients et partenaires</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="value-card">
+                <i class="fas fa-globe fa-3x mb-4"></i>
+                <h5 class="mb-3">Responsabilité</h5>
+                <p class="mb-0">Respect de l'environnement et de la communauté</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-counter">500+</div>
+                <h5 class="text-muted">Clients Satisfaits</h5>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-counter">2000m²</div>
+                <h5 class="text-muted">Surface Cultivée</h5>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-counter">1000+</div>
+                <h5 class="text-muted">Commandes Livrées</h5>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="stats-counter">10+</div>
+                <h5 class="text-muted">Villes Desservies</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Timeline Section -->
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <span class="badge bg-success px-4 py-2 mb-3">Notre Parcours</span>
+        <h2 class="display-5 fw-bold mb-4">L'histoire de Grow With Green</h2>
+    </div>
+    
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h4 class="text-primary mb-2">2015 - Les Débuts</h4>
+                <p class="text-muted mb-0">
+                    Création de Grow With Green à Attinguié avec une petite exploitation de 500 m². 
+                    Première récolte de courges destinées aux supermarchés d'Abidjan.
+                </p>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h4 class="text-primary mb-2">2017 - Expansion</h4>
+                <p class="text-muted mb-0">
+                    Extension de l'exploitation à 2000 m². Ajout du gombo et des aubergines à notre 
+                    gamme de produits. Partenariat avec SOCOCE et Prima.
+                </p>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h4 class="text-primary mb-2">2020 - Certification Bio</h4>
+                <p class="text-muted mb-0">
+                    Obtention de la certification agriculture biologique. Adoption de pratiques 
+                    100% naturelles et durables.
+                </p>
+            </div>
+        </div>
+        
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <h4 class="text-primary mb-2">2025 - Digitalisation</h4>
+                <p class="text-muted mb-0">
+                    Lancement de notre plateforme e-commerce pour servir toute la Côte d'Ivoire. 
+                    Extension de nos livraisons à 10+ villes.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Section -->
+<div class="bg-light py-5">
+    <div class="container my-5">
+        <div class="text-center mb-5">
+            <span class="badge bg-success px-4 py-2 mb-3">Notre Équipe</span>
+            <h2 class="display-5 fw-bold mb-4">Les visages de Grow With Green</h2>
+            <p class="fs-5 text-muted">Une équipe passionnée et dévouée</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-2">Felicien EKLOU</h5>
+                    <p class="text-muted mb-3">Fondateur & CEO</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-2">GAHIE GRACE</h5>
+                    <p class="text-muted mb-3">Directrice des Opérations</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-2">Yao Michel</h5>
+                    <p class="text-muted mb-3">Responsable Qualité</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-member">
+                    <div class="team-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h5 class="mb-2">GRACE BOYA</h5>
+                    <p class="text-muted mb-3">Chef de Production</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-outline-primary rounded-circle">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="container my-5 py-5">
+    <div class="bg-primary rounded-3 p-5 text-center text-white">
+        <h2 class="display-5 fw-bold mb-4">Rejoignez l'aventure Grow With Green</h2>
+        <p class="fs-5 mb-4">Découvrez nos légumes premium et faites partie de notre communauté</p>
+        <a href="{% url 'boutique:catalogue' %}" class="btn btn-warning btn-lg rounded-pill px-5 me-3">
+            <i class="fas fa-shopping-cart me-2"></i>Commander Maintenant
+        </a>
+        <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg rounded-pill px-5">
+            <i class="fas fa-phone me-2"></i>Nous Contacter
+        </a>
+    </div>
+</div>
+{% endblock %}

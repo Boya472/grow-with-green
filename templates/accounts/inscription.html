@@ -1,0 +1,259 @@
+-{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inscription - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 120px 0 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 2;
+    }
+    
+    .account-type-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        height: 100%;
+        text-align: center;
+    }
+    
+    .account-type-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(102,126,234,0.2);
+    }
+    
+    .account-type-card.active {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+    }
+    
+    .account-type-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 32px;
+    }
+    
+    .password-toggle {
+        cursor: pointer;
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .social-login-btn {
+        border: 2px solid #e0e0e0;
+        padding: 12px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .social-login-btn:hover {
+        border-color: #667eea;
+        background: #f8f9ff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="auth-card">
+                    <!-- Header -->
+                    <div class="text-center mb-5">
+                        <h1 class="display-5 fw-bold mb-3">Créer un compte</h1>
+                        <p class="text-muted fs-5">Rejoignez Grow With Green et profitez de nos légumes premium</p>
+                    </div>
+                    
+                    <!-- Account Type Selection -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <a href="{% url 'accounts:inscription' %}" class="text-decoration-none">
+                                <div class="account-type-card active">
+                                    <div class="account-type-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <h4 class="mb-3">Compte Particulier</h4>
+                                    <p class="text-muted mb-0">Pour les achats personnels et familiaux</p>
+                                    <span class="badge bg-success mt-3 px-4 py-2">Sélectionné</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'accounts:inscription_b2b' %}" class="text-decoration-none">
+                                <div class="account-type-card">
+                                    <div class="account-type-icon">
+                                        <i class="fas fa-building"></i>
+                                    </div>
+                                    <h4 class="mb-3">Compte Professionnel</h4>
+                                    <p class="text-muted mb-0">Pour les restaurants, hôtels et supermarchés</p>
+                                    <span class="badge bg-light text-dark mt-3 px-4 py-2">Tarifs B2B</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Registration Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_type" value="B2C">
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Prénom *</label>
+                                <input type="text" name="first_name" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nom *</label>
+                                <input type="text" name="last_name" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email *</label>
+                                <input type="email" name="email" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Téléphone *</label>
+                                <input type="tel" name="telephone" class="form-control form-control-lg" placeholder="+225 XX XX XX XX XX" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Adresse</label>
+                                <textarea name="adresse" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nom d'utilisateur *</label>
+                                <input type="text" name="username" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Mot de passe *</label>
+                                <div class="position-relative">
+                                    <input type="password" name="password1" id="password" class="form-control form-control-lg" required>
+                                    <span class="password-toggle" onclick="togglePassword('password')">
+                                        <i class="fas fa-eye" id="password-icon"></i>
+                                    </span>
+                                </div>
+                                <small class="text-muted">Minimum 8 caractères</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Confirmer le mot de passe *</label>
+                                <div class="position-relative">
+                                    <input type="password" name="password2" id="password2" class="form-control form-control-lg" required>
+                                    <span class="password-toggle" onclick="togglePassword('password2')">
+                                        <i class="fas fa-eye" id="password2-icon"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Terms -->
+                        <div class="mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    J'accepte les <a href="#" class="text-primary">conditions générales d'utilisation</a> et la <a href="#" class="text-primary">politique de confidentialité</a>
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="newsletter">
+                                <label class="form-check-label" for="newsletter">
+                                    Je souhaite recevoir les offres promotionnelles par email
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill py-3">
+                                <i class="fas fa-user-plus me-2"></i>Créer mon compte
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Social Login -->
+                    <div class="text-center my-4">
+                        <span class="text-muted">Ou inscrivez-vous avec</span>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <button class="btn social-login-btn w-100">
+                                <i class="fab fa-google me-2" style="color: #DB4437;"></i>Google
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn social-login-btn w-100">
+                                <i class="fab fa-facebook me-2" style="color: #4267B2;"></i>Facebook
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn social-login-btn w-100">
+                                <i class="fab fa-apple me-2"></i>Apple
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Login Link -->
+                    <div class="text-center">
+                        <p class="text-muted mb-0">
+                            Vous avez déjà un compte ? 
+                            <a href="{% url 'accounts:login' %}" class="text-primary fw-bold">Connectez-vous</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const icon = document.getElementById(fieldId + '-icon');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
+{% endblock %}

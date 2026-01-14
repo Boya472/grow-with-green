@@ -1,0 +1,392 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard Admin - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+        border-left: 4px solid;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+    }
+    
+    .chart-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+    
+    .recent-orders {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+    
+    .order-item {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background 0.3s ease;
+    }
+    
+    .order-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .order-item:last-child {
+        border-bottom: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-4 fw-bold mb-3">Dashboard Administrateur</h1>
+                <p class="fs-5 mb-0">Vue d'ensemble de votre activité</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <p class="mb-0">{{ date_aujourdhui|date:"l d F Y" }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Chiffre d'affaires -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card" style="border-left-color: #667eea;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">Chiffre d'affaires</p>
+                        <h3 class="mb-0">{{ stats.ca_total|floatformat:0 }} FCFA</h3>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i>+12% ce mois
+                        </small>
+                    </div>
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Commandes -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card" style="border-left-color: #28a745;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">Commandes totales</p>
+                        <h3 class="mb-0">{{ stats.total_commandes }}</h3>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i>{{ stats.commandes_mois }} ce mois
+                        </small>
+                    </div>
+                    <div class="stat-icon" style="background: #28a745;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Clients -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card" style="border-left-color: #ffc107;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">Clients actifs</p>
+                        <h3 class="mb-0">{{ stats.total_clients }}</h3>
+                        <small class="text-success">
+                            <i class="fas fa-arrow-up me-1"></i>{{ stats.nouveaux_clients }} nouveaux
+                        </small>
+                    </div>
+                    <div class="stat-icon" style="background: #ffc107;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stock -->
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card" style="border-left-color: #dc3545;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-1">Stock total</p>
+                        <h3 class="mb-0">{{ stats.stock_total }} kg</h3>
+                        <small class="text-warning">
+                            <i class="fas fa-exclamation-triangle me-1"></i>{{ stats.alertes_stock }} alertes
+                        </small>
+                    </div>
+                    <div class="stat-icon" style="background: #dc3545;">
+                        <i class="fas fa-boxes"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Section -->
+<div class="container mb-5">
+    <div class="row g-4">
+        <!-- Ventes par mois -->
+        <div class="col-lg-8">
+            <div class="chart-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-chart-line me-2 text-primary"></i>
+                    Évolution des ventes
+                </h4>
+                <canvas id="salesChart" height="80"></canvas>
+            </div>
+        </div>
+        
+        <!-- Produits les plus vendus -->
+        <div class="col-lg-4">
+            <div class="chart-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-chart-pie me-2 text-primary"></i>
+                    Top Produits
+                </h4>
+                <canvas id="productsChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders & Quick Actions -->
+<div class="container mb-5">
+    <div class="row g-4">
+        <!-- Recent Orders -->
+        <div class="col-lg-8">
+            <div class="recent-orders">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">
+                        <i class="fas fa-clock me-2 text-primary"></i>
+                        Commandes récentes
+                    </h4>
+                    <a href="/admin/commandes/commande/" class="btn btn-outline-primary btn-sm rounded-pill">
+                        Voir tout
+                    </a>
+                </div>
+                
+                {% for commande in commandes_recentes %}
+                <div class="order-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">{{ commande.numero_commande }}</h6>
+                            <p class="text-muted mb-0 small">
+                                {{ commande.user.get_full_name }} • {{ commande.date_commande|date:"d/m/Y H:i" }}
+                            </p>
+                        </div>
+                        <div class="text-center mx-3">
+                            <span class="badge bg-{% if commande.statut == 'EN_ATTENTE' %}warning{% elif commande.statut == 'CONFIRMEE' %}info{% elif commande.statut == 'EXPEDIEE' %}primary{% elif commande.statut == 'LIVREE' %}success{% else %}danger{% endif %}">
+                                {{ commande.get_statut_display }}
+                            </span>
+                        </div>
+                        <div class="text-end">
+                            <h6 class="mb-0 text-primary">{{ commande.montant_total }} FCFA</h6>
+                            <a href="/admin/commandes/commande/{{ commande.id }}/change/" class="text-muted small">
+                                <i class="fas fa-eye me-1"></i>Voir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted py-4">Aucune commande récente</p>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="col-lg-4">
+            <div class="chart-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-bolt me-2 text-primary"></i>
+                    Actions rapides
+                </h4>
+                
+                <div class="d-grid gap-3">
+                    <a href="/admin/boutique/produit/add/" class="btn btn-primary rounded-pill">
+                        <i class="fas fa-plus me-2"></i>Ajouter un produit
+                    </a>
+                    <a href="/admin/production/plantation/add/" class="btn btn-success rounded-pill">
+                        <i class="fas fa-seedling me-2"></i>Nouvelle plantation
+                    </a>
+                    <a href="/admin/production/recolte/add/" class="btn btn-warning rounded-pill">
+                        <i class="fas fa-leaf me-2"></i>Enregistrer récolte
+                    </a>
+                    <a href="/admin/commandes/zonelivraison/" class="btn btn-info rounded-pill">
+                        <i class="fas fa-map-marked-alt me-2"></i>Gérer zones livraison
+                    </a>
+                    <a href="/admin/accounts/user/?user_type=B2B&compte_valide=False" class="btn btn-danger rounded-pill">
+                        <i class="fas fa-user-check me-2"></i>Valider comptes B2B
+                    </a>
+                </div>
+                
+                <hr class="my-4">
+                
+                <h6 class="mb-3">Alertes Stock</h6>
+                {% for alerte in alertes_stock %}
+                <div class="alert alert-warning py-2 mb-2">
+                    <small>
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>{{ alerte.legume.get_nom_display }}</strong> : {{ alerte.quantite_disponible }} kg
+                    </small>
+                </div>
+                {% empty %}
+                <p class="text-muted small mb-0">Aucune alerte stock</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Customers -->
+<div class="container mb-5">
+    <div class="chart-card">
+        <h4 class="mb-4">
+            <i class="fas fa-star me-2 text-primary"></i>
+            Meilleurs clients
+        </h4>
+        
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Type</th>
+                        <th>Commandes</th>
+                        <th>Total dépensé</th>
+                        <th>Dernière commande</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in top_clients %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                    {{ client.user.first_name.0 }}{{ client.user.last_name.0 }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ client.user.get_full_name }}</div>
+                                    <small class="text-muted">{{ client.user.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-{% if client.user.user_type == 'B2B' %}warning{% else %}success{% endif %}">
+                                {{ client.user.get_user_type_display }}
+                            </span>
+                        </td>
+                        <td>{{ client.total_commandes }}</td>
+                        <td class="text-primary fw-bold">{{ client.total_depense|floatformat:0 }} FCFA</td>
+                        <td>{{ client.derniere_commande|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">Aucun client pour le moment</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// Chart des ventes
+const salesCtx = document.getElementById('salesChart').getContext('2d');
+new Chart(salesCtx, {
+    type: 'line',
+    data: {
+        labels: { ventes_labelssafe },
+        datasets: [{
+            label: 'Ventes (FCFA)',
+            data: { ventes_datasafe },
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Chart des produits
+const productsCtx = document.getElementById('productsChart').getContext('2d');
+new Chart(productsCtx, {
+    type: 'doughnut',
+    data: {
+        labels: { produits_labelssafe },
+        datasets: [{
+            data: { produits_datasafe },
+            backgroundColor: [
+                '#667eea',
+                '#28a745',
+                '#ffc107',
+                '#dc3545'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

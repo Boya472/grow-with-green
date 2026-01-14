@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 120px 0 80px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .contact-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 100%;
+        transition: transform 0.3s ease;
+    }
+    
+    .contact-card:hover {
+        transform: translateY(-10px);
+    }
+    
+    .contact-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        color: white;
+        font-size: 32px;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    }
+    
+    .map-container {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        height: 400px;
+        background: #f0f0f0;
+    }
+    
+    .faq-item {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 15px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .faq-item:hover {
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .faq-answer {
+        display: none;
+        padding-top: 15px;
+        margin-top: 15px;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .social-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: white;
+        transition: transform 0.3s ease;
+    }
+    
+    .social-btn:hover {
+        transform: scale(1.1);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-3 fw-bold mb-4">Contactez-Nous</h1>
+            <p class="fs-4 mb-0">Notre équipe est à votre écoute 7j/7</p>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Info Cards -->
+<div class="container my-5 py-5">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="contact-card text-center">
+                <div class="contact-icon">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <h4 class="mb-3">Téléphone</h4>
+                <p class="text-muted mb-3">Appelez-nous du lundi au samedi de 8h à 18h</p>
+                <a href="tel:+22512345678" class="text-primary fw-bold fs-5">
+                    +225 05 86 11 19 01
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="contact-card text-center">
+                <div class="contact-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h4 class="mb-3">Email</h4>
+                <p class="text-muted mb-3">Envoyez-nous un email, nous répondons sous 24h</p>
+                <a href="mailto:contact@growwithgreen.ci" class="text-primary fw-bold fs-5">
+                    contact@growwithgreen.ci
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="contact-card text-center">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h4 class="mb-3">Adresse</h4>
+                <p class="text-muted mb-3">Visitez notre exploitation agricole</p>
+                <p class="text-primary fw-bold fs-6">
+                    Attinguié, Abidjan<br>
+                    Côte d'Ivoire
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact Form & Map -->
+<div class="bg-light py-5">
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Contact Form -->
+            <div class="col-lg-6">
+                <div class="form-card">
+                    <h2 class="mb-4">Envoyez-nous un message</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nom complet *</label>
+                                <input type="text" name="nom" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email *</label>
+                                <input type="email" name="email" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Téléphone</label>
+                                <input type="tel" name="telephone" class="form-control form-control-lg">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Sujet *</label>
+                                <select name="sujet" class="form-select form-select-lg" required>
+                                    <option value="">Choisissez un sujet</option>
+                                    <option value="commande">Question sur une commande</option>
+                                    <option value="produit">Information produit</option>
+                                    <option value="partenariat">Partenariat B2B</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Message *</label>
+                                <textarea name="message" class="form-control" rows="5" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="consent" required>
+                                    <label class="form-check-label" for="consent">
+                                        J'accepte que mes données soient utilisées pour traiter ma demande
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill w-100">
+                                    <i class="fas fa-paper-plane me-2"></i>Envoyer le message
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Map & Info -->
+            <div class="col-lg-6">
+                <div class="map-container mb-4">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3972.3!2d-4.0!3d5.3!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNcKwMTgnMDAuMCJOIDTCsDAwJzAwLjAiVw!5e0!3m2!1sen!2sci!4v1234567890" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+                
+                <div class="form-card">
+                    <h5 class="mb-4">Horaires d'ouverture</h5>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fw-bold">Lundi - Vendredi</span>
+                        <span>8h00 - 18h00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="fw-bold">Samedi</span>
+                        <span>8h00 - 14h00</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-4">
+                        <span class="fw-bold">Dimanche</span>
+                        <span class="text-danger">Fermé</span>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <h5 class="mb-3">Suivez-nous</h5>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="social-btn" style="background: #3b5998;">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-btn" style="background: #1DA1F2;">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-btn" style="background: #E4405F;">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-btn" style="background: #0077B5;">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-btn" style="background: #25D366;">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="container my-5 py-5">
+    <div class="text-center mb-5">
+        <span class="badge bg-success px-4 py-2 mb-3">FAQ</span>
+        <h2 class="display-5 fw-bold mb-4">Questions Fréquentes</h2>
+        <p class="fs-5 text-muted">Trouvez rapidement des réponses à vos questions</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-question-circle text-primary me-3"></i>Comment passer une commande ?</h5>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-muted mb-0">
+                        Pour passer une commande, créez d'abord un compte sur notre plateforme. Ensuite, parcourez 
+                        notre catalogue, ajoutez les produits à votre panier, et procédez au paiement. Vous recevrez 
+                        une confirmation par email avec les détails de votre commande.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-truck text-primary me-3"></i>Quels sont les délais de livraison ?</h5>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-muted mb-0">
+                        Les délais de livraison varient selon votre zone : 24h pour Abidjan, 48h pour les autres 
+                        villes. Nous livrons du lundi au samedi. Vous recevez un SMS avec le suivi de votre colis.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-credit-card text-primary me-3"></i>Quels modes de paiement acceptez-vous ?</h5>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-muted mb-0">
+                        Nous acceptons Orange Money, MTN Money, Moov Money, Wave et les cartes bancaires (Visa, Mastercard). 
+                        Tous les paiements sont sécurisés et cryptés.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-leaf text-primary me-3"></i>Vos produits sont-ils biologiques ?</h5>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-muted mb-0">
+                        Oui ! Tous nos légumes sont cultivés sans pesticides ni produits chimiques nocifs. 
+                        Nous pratiquons une agriculture 100% naturelle et durable, certifiée bio depuis 2020.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-building text-primary me-3"></i>Offrez-vous des tarifs spéciaux pour les professionnels ?</h5>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-muted mb-0">
+                        Absolument ! Créez un compte professionnel (B2B) pour bénéficier de tarifs préférentiels 
+                        jusqu'à -20%, d'une livraison prioritaire et d'un gestionnaire de compte dédié.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-undo text-primary me-3"></i>Quelle est votre politique de retour ?</h5>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p class="text-muted mb-0">
+                        Si vous n'êtes pas satisfait de la qualité de nos produits, contactez-nous dans les 24h 
+                        suivant la livraison. Nous offrons un remboursement complet ou un remplacement selon votre préférence.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-5">
+        <p class="text-muted mb-3">Vous ne trouvez pas de réponse à votre question ?</p>
+        <a href="#" class="btn btn-primary btn-lg rounded-pill px-5">
+            <i class="fas fa-comments me-2"></i>Contactez notre support
+        </a>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <h3 class="mb-3">Besoin d'aide pour votre commande ?</h3>
+                <p class="text-muted mb-0">Notre équipe de support est disponible pour vous accompagner à chaque étape</p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="tel:+22512345678" class="btn btn-primary btn-lg rounded-pill px-5">
+                    <i class="fas fa-phone me-2"></i>Appelez-nous
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleFaq(element) {
+    const answer = element.querySelector('.faq-answer');
+    const icon = element.querySelector('.fa-chevron-down');
+    
+    // Close all other FAQs
+    document.querySelectorAll('.faq-answer').forEach(item => {
+        if (item !== answer) {
+            item.style.display = 'none';
+        }
+    });
+    
+    document.querySelectorAll('.fa-chevron-down').forEach(item => {
+        if (item !== icon) {
+            item.style.transform = 'rotate(0deg)';
+        }
+    });
+    
+    // Toggle current FAQ
+    if (answer.style.display === 'block') {
+        answer.style.display = 'none';
+        icon.style.transform = 'rotate(0deg)';
+    } else {
+        answer.style.display = 'block';
+        icon.style.transform = 'rotate(180deg)';
+    }
+}
+</script>
+{% endblock %}

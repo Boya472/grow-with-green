@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inscription Professionnelle - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 120px 0 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-page::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 2;
+    }
+    
+    .account-type-card {
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        height: 100%;
+        text-align: center;
+    }
+    
+    .account-type-card:hover {
+        border-color: #667eea;
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(102,126,234,0.2);
+    }
+    
+    .account-type-card.active {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+    }
+    
+    .account-type-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 32px;
+    }
+    
+    .benefits-card {
+        background: #f8f9ff;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+    
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .benefit-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="auth-card">
+                    <!-- Header -->
+                    <div class="text-center mb-5">
+                        <h1 class="display-5 fw-bold mb-3">Compte Professionnel</h1>
+                        <p class="text-muted fs-5">Profitez de tarifs préférentiels et d'avantages exclusifs</p>
+                    </div>
+                    
+                    <!-- Account Type Selection -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <a href="{% url 'accounts:inscription' %}" class="text-decoration-none">
+                                <div class="account-type-card">
+                                    <div class="account-type-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <h4 class="mb-3">Compte Particulier</h4>
+                                    <p class="text-muted mb-0">Pour les achats personnels et familiaux</p>
+                                    <span class="badge bg-light text-dark mt-3 px-4 py-2">Changer</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="account-type-card active">
+                                <div class="account-type-icon">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <h4 class="mb-3">Compte Professionnel</h4>
+                                <p class="text-muted mb-0">Pour les restaurants, hôtels et supermarchés</p>
+                                <span class="badge bg-success mt-3 px-4 py-2">Sélectionné</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Benefits -->
+                    <div class="benefits-card">
+                        <h5 class="mb-4 text-center"><i class="fas fa-star text-warning me-2"></i>Avantages du compte professionnel</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-tags"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Tarifs B2B</h6>
+                                        <small class="text-muted">Jusqu'à -20% sur tous les produits</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-shipping-fast"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Livraison prioritaire</h6>
+                                        <small class="text-muted">Livraison express garantie</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-file-invoice"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Facturation</h6>
+                                        <small class="text-muted">Factures professionnelles détaillées</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="benefit-item">
+                                    <div class="benefit-icon">
+                                        <i class="fas fa-headset"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">Support dédié</h6>
+                                        <small class="text-muted">Gestionnaire de compte personnel</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Registration Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="user_type" value="B2B">
+                        
+                        <h5 class="mb-4 text-primary">
+                            <i class="fas fa-building me-2"></i>Informations de l'entreprise
+                        </h5>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nom de l'entreprise *</label>
+                                <input type="text" name="nom_entreprise" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Secteur d'activité *</label>
+                                <select name="secteur_activite" class="form-select form-select-lg" required>
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="Restaurant">Restaurant</option>
+                                    <option value="Hôtel">Hôtel</option>
+                                    <option value="Supermarché">Supermarché</option>
+                                    <option value="Traiteur">Traiteur</option>
+                                    <option value="Autre">Autre</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Adresse de l'entreprise *</label>
+                                <textarea name="adresse" class="form-control" rows="2" required></textarea>
+                            </div>
+                        </div>
+                        
+                        <h5 class="mb-4 text-primary">
+                            <i class="fas fa-user-tie me-2"></i>Informations du responsable
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Prénom du responsable *</label>
+                                <input type="text" name="first_name" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nom du responsable *</label>
+                                <input type="text" name="last_name" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email professionnel *</label>
+                                <input type="email" name="email" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Téléphone *</label>
+                                <input type="tel" name="telephone" class="form-control form-control-lg" placeholder="+225 XX XX XX XX XX" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nom d'utilisateur *</label>
+                                <input type="text" name="username" class="form-control form-control-lg" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Mot de passe *</label>
+                                <input type="password" name="password1" class="form-control form-control-lg" required>
+                                <small class="text-muted">Minimum 8 caractères</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Confirmer le mot de passe *</label>
+                                <input type="password" name="password2" class="form-control form-control-lg" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Validation Notice -->
+                        <div class="alert alert-info mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Note importante :</strong> Votre compte sera validé par notre équipe sous 24-48h. Vous recevrez un email de confirmation.
+                        </div>
+                        
+                        <!-- Terms -->
+                        <div class="mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="terms" required>
+                                <label class="form-check-label" for="terms">
+                                    J'accepte les <a href="#" class="text-primary">conditions générales B2B</a> et la <a href="#" class="text-primary">politique de confidentialité</a>
+                                </label>
+                            </div>
+                            <div class="form-check mt-2">
+                                <input class="form-check-input" type="checkbox" id="newsletter">
+                                <label class="form-check-label" for="newsletter">
+                                    Je souhaite recevoir les offres professionnelles par email
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Submit Button -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill py-3">
+                                <i class="fas fa-briefcase me-2"></i>Créer mon compte professionnel
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Login Link -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted mb-0">
+                            Vous avez déjà un compte ? 
+                            <a href="{% url 'accounts:login' %}" class="text-primary fw-bold">Connectez-vous</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

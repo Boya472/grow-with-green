@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    Mon Programme de Fidélité
+    
+    
+        
+            
+                
+                    {{ points.points }}
+                    Points disponibles
+                
+            
+        
+        
+            
+                
+                    {{ points.get_niveau_display }}
+                    Niveau actuel
+                
+            
+        
+        
+            
+                
+                    {{ points.reduction_disponible }} FCFA
+                    Réduction disponible
+                
+            
+        
+    
+    
+    Avantages de votre niveau
+    {{ points.avantages_niveau }}
+    
+    Historique des points
+    
+        
+            
+                Date
+                Type
+                Points
+                Description
+            
+        
+        
+            {% for h in historique %}
+            
+                {{ h.date|date:"d/m/Y H:i" }}
+                {{ h.get_type_display }}
+                {{ h.points }}
+                {{ h.description }}
+            
+            {% endfor %}
+        
+    
+
+{% endblock %}
+

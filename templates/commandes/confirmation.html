@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commande Confirmée - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirmation-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        padding: 120px 0 60px;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .confirmation-card {
+        background: white;
+        border-radius: 20px;
+        padding: 50px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    
+    .success-icon {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 30px;
+        animation: scaleIn 0.5s ease;
+    }
+    
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+    
+    .checkmark {
+        font-size: 60px;
+        color: white;
+    }
+    
+    .order-summary-box {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 30px;
+        margin: 30px 0;
+    }
+    
+    .next-steps {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        margin-bottom: 20px;
+        text-align: left;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        margin-right: 20px;
+    }
+    
+    .confetti {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: #667eea;
+        position: absolute;
+        animation: confetti-fall 3s linear infinite;
+    }
+    
+    @keyframes confetti-fall {
+        to {
+            transform: translateY(100vh) rotate(360deg);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="confirmation-card">
+                    <!-- Success Icon -->
+                    <div class="success-icon">
+                        <i class="fas fa-check checkmark"></i>
+                    </div>
+                    
+                    <!-- Success Message -->
+                    <h1 class="display-4 fw-bold text-success mb-3">Commande Confirmée !</h1>
+                    <p class="fs-5 text-muted mb-4">
+                        Merci pour votre commande ! Nous avons bien reçu votre demande.
+                    </p>
+                    
+                    <!-- Order Number -->
+                    <div class="order-summary-box">
+                        <h3 class="mb-4">Numéro de commande</h3>
+                        <h2 class="text-primary fw-bold mb-4">{{ commande.numero_commande }}</h2>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1"><small>Date</small></p>
+                                <p class="fw-bold mb-0">{{ commande.date_commande|date:"d/m/Y" }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1"><small>Articles</small></p>
+                                <p class="fw-bold mb-0">{{ commande.items.count }} produit{{ commande.items.count|pluralize }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="text-muted mb-1"><small>Total</small></p>
+                                <p class="fw-bold mb-0 text-primary">{{ commande.montant_total }} FCFA</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Email Confirmation -->
+                    <div class="alert alert-info rounded-3 mb-4">
+                        <i class="fas fa-envelope me-2"></i>
+                        Un email de confirmation a été envoyé à <strong>{{ commande.user.email }}</strong>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-flex flex-wrap gap-3 justify-content-center mb-5">
+                        <a href="{% url 'commandes:detail_commande' commande.numero_commande %}" class="btn btn-primary btn-lg rounded-pill px-5">
+                            <i class="fas fa-eye me-2"></i>Voir ma commande
+                        </a>
+                        <a href="{% url 'boutique:catalogue' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">
+                            <i class="fas fa-shopping-bag me-2"></i>Continuer mes achats
+                        </a>
+                    </div>
+                    
+                    <!-- What's Next -->
+                    <hr class="my-5">
+                    
+                    <h4 class="mb-4 text-start">
+                        <i class="fas fa-list-check me-2 text-primary"></i>
+                        Prochaines étapes
+                    </h4>
+                    
+                    <div class="next-steps">
+                        <div class="d-flex align-items-start">
+                            <div class="step-number">1</div>
+                            <div>
+                                <h6 class="mb-2">Validation du paiement</h6>
+                                <p class="text-muted mb-0">Nous vérifions votre paiement. Vous recevrez une confirmation sous 1h.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <div class="d-flex align-items-start">
+                            <div class="step-number">2</div>
+                            <div>
+                                <h6 class="mb-2">Préparation de la commande</h6>
+                                <p class="text-muted mb-0">Nos équipes préparent vos légumes frais avec soin.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <div class="d-flex align-items-start">
+                            <div class="step-number">3</div>
+                            <div>
+                                <h6 class="mb-2">Expédition</h6>
+                                <p class="text-muted mb-0">Votre commande sera expédiée sous 24h et livrée dans {{ commande.zone_livraison.delai_livraison }} jour(s).</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="next-steps">
+                        <div class="d-flex align-items-start">
+                            <div class="step-number">4</div>
+                            <div>
+                                <h6 class="mb-2">Livraison</h6>
+                                <p class="text-muted mb-0">Recevez vos légumes frais directement chez vous !</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-3">
+                <i class="fas fa-truck fa-3x text-primary mb-3"></i>
+                <h6 class="fw-bold">Livraison Rapide</h6>
+                <p class="text-muted small mb-0">Sous 24-48h</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                <h6 class="fw-bold">Produits Frais</h6>
+                <p class="text-muted small mb-0">100% Naturels</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-headset fa-3x text-info mb-3"></i>
+                <h6 class="fw-bold">Support 24/7</h6>
+                <p class="text-muted small mb-0">À votre écoute</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-shield-alt fa-3x text-warning mb-3"></i>
+                <h6 class="fw-bold">Paiement Sécurisé</h6>
+                <p class="text-muted small mb-0">Transactions protégées</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recommended Products -->
+<div class="container py-5">
+    <h3 class="text-center mb-4">Ces produits pourraient vous intéresser</h3>
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                    <h6>Courge Premium</h6>
+                    <p class="text-muted small mb-3">2500 FCFA/kg</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Voir</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                    <h6>Gombo Frais</h6>
+                    <p class="text-muted small mb-3">1500 FCFA/kg</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Voir</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-leaf fa-3x text-success mb-3"></i>
+                    <h6>Aubergine</h6>
+                    <p class="text-muted small mb-3">2000 FCFA/kg</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Voir</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-gift fa-3x text-warning mb-3"></i>
+                    <h6>Pack Découverte</h6>
+                    <p class="text-muted small mb-3">6000 FCFA</p>
+                    <a href="#" class="btn btn-outline-primary btn-sm rounded-pill">Voir</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

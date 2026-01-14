@@ -1,0 +1,489 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Finaliser la commande - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .checkout-steps {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 40px;
+        padding: 0;
+        list-style: none;
+    }
+    
+    .checkout-step {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    
+    .step-number {
+        width: 50px;
+        height: 50px;
+        background: white;
+        border: 3px solid #e0e0e0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #999;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .checkout-step.active .step-number {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+    }
+    
+    .checkout-step.completed .step-number {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+    }
+    
+    .step-label {
+        position: absolute;
+        top: 60px;
+        white-space: nowrap;
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .step-connector {
+        width: 100px;
+        height: 3px;
+        background: #e0e0e0;
+        margin: 0 10px;
+    }
+    
+    .checkout-step.completed .step-connector {
+        background: #28a745;
+    }
+    
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+    
+    .payment-method {
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 15px;
+    }
+    
+    .payment-method:hover {
+        border-color: #667eea;
+        background: #f8f9ff;
+    }
+    
+    .payment-method.active {
+        border-color: #667eea;
+        background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%);
+    }
+    
+    .payment-method input[type="radio"] {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .payment-icon {
+        width: 50px;
+        height: 50px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+    
+    .order-summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 110px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold mb-3">Finaliser la commande</h1>
+            <p class="fs-5">Plus qu'une étape avant de recevoir vos légumes frais</p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Checkout Steps -->
+    <ul class="checkout-steps">
+        <li class="checkout-step completed">
+            <div class="step-number">
+                <i class="fas fa-check"></i>
+            </div>
+            <span class="step-label">Panier</span>
+        </li>
+        <div class="step-connector"></div>
+        <li class="checkout-step active">
+            <div class="step-number">2</div>
+            <span class="step-label">Livraison & Paiement</span>
+        </li>
+        <div class="step-connector"></div>
+        <li class="checkout-step">
+            <div class="step-number">3</div>
+            <span class="step-label">Confirmation</span>
+        </li>
+    </ul>
+    
+    <div class="row g-4">
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <form method="post" id="checkoutForm">
+                {% csrf_token %}
+                
+                <!-- Shipping Information -->
+                <div class="form-card">
+                    <h4 class="mb-4">
+                        <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                        Informations de livraison
+                    </h4>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Prénom *</label>
+                            <input type="text" class="form-control" value="{{ user.first_name }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Nom *</label>
+                            <input type="text" class="form-control" value="{{ user.last_name }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Téléphone *</label>
+                            <input type="tel" class="form-control" value="{{ user.telephone }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email *</label>
+                            <input type="email" class="form-control" value="{{ user.email }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Adresse complète *</label>
+                            <textarea class="form-control" rows="3" name="adresse_livraison" required>{{ user.adresse }}</textarea>
+                            <small class="text-muted">Indiquez des détails précis (quartier, points de repère)</small>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Ville / Commune *</label>
+                            <select class="form-select" name="zone_livraison" required>
+                                <option value="">Sélectionnez une ville</option>
+                                <option value="1">Abidjan - 1000 FCFA</option>
+                                <option value="2">Yamoussoukro - 2500 FCFA</option>
+                                <option value="3">Bouaké - 3000 FCFA</option>
+                                <option value="4">San Pedro - 3500 FCFA</option>
+                                <option value="5">Korhogo - 4000 FCFA</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Code Postal (optionnel)</label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Instructions de livraison (optionnel)</label>
+                            <textarea class="form-control" rows="2" name="notes_client" placeholder="Ex: Sonnez à l'interphone, laissez au gardien..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Method -->
+                <div class="form-card">
+                    <h4 class="mb-4">
+                        <i class="fas fa-credit-card me-2 text-primary"></i>
+                        Mode de paiement
+                    </h4>
+                    
+                    <!-- Mobile Money -->
+                    <div class="payment-method" onclick="selectPayment('mobile-money')">
+                        <div class="d-flex align-items-center">
+                            <input type="radio" name="mode_paiement" value="ORANGE_MONEY" id="mobile-money" class="me-3">
+                            <div class="payment-icon me-3">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">Mobile Money</h6>
+                                <p class="text-muted mb-0 small">Orange Money, MTN Money, Moov Money, Wave</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-muted"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Payment -->
+                    <div class="payment-method" onclick="selectPayment('carte')">
+                        <div class="d-flex align-items-center">
+                            <input type="radio" name="mode_paiement" value="CARTE_BANCAIRE" id="carte" class="me-3">
+                            <div class="payment-icon me-3">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">Carte Bancaire</h6>
+                                <p class="text-muted mb-0 small">Visa, Mastercard acceptées</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <img src="https://via.placeholder.com/40x25/1434CB/ffffff?text=VISA" alt="Visa" style="height: 25px;">
+                                <img src="https://via.placeholder.com/40x25/EB001B/ffffff?text=MC" alt="Mastercard" style="height: 25px;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Money Details (Hidden by default) -->
+                    <div id="mobile-money-details" class="mt-3 p-4 bg-light rounded" style="display: none;">
+                        <h6 class="mb-3">Sélectionnez votre opérateur</h6>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label class="payment-operator">
+                                    <input type="radio" name="operateur" value="ORANGE_MONEY">
+                                    <div class="operator-card">
+                                        <div class="text-center p-3 border rounded">
+                                            <i class="fas fa-mobile-alt fa-2x mb-2" style="color: #FF7900;"></i>
+                                            <p class="mb-0 fw-bold">Orange Money</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="payment-operator">
+                                    <input type="radio" name="operateur" value="MTN_MONEY">
+                                    <div class="operator-card">
+                                        <div class="text-center p-3 border rounded">
+                                            <i class="fas fa-mobile-alt fa-2x mb-2" style="color: #FFCC00;"></i>
+                                            <p class="mb-0 fw-bold">MTN Money</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="payment-operator">
+                                    <input type="radio" name="operateur" value="MOOV_MONEY">
+                                    <div class="operator-card">
+                                        <div class="text-center p-3 border rounded">
+                                            <i class="fas fa-mobile-alt fa-2x mb-2" style="color: #009FE3;"></i>
+                                            <p class="mb-0 fw-bold">Moov Money</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="col-6">
+                                <label class="payment-operator">
+                                    <input type="radio" name="operateur" value="WAVE">
+                                    <div class="operator-card">
+                                        <div class="text-center p-3 border rounded">
+                                            <i class="fas fa-mobile-alt fa-2x mb-2" style="color: #00D9A5;"></i>
+                                            <p class="mb-0 fw-bold">Wave</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <label class="form-label">Numéro de téléphone</label>
+                            <input type="tel" class="form-control" placeholder="+225 XX XX XX XX XX">
+                        </div>
+                    </div>
+                    
+                    <!-- Card Details (Hidden by default) -->
+                    <div id="carte-details" class="mt-3 p-4 bg-light rounded" style="display: none;">
+                        <h6 class="mb-3">Informations de carte</h6>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Numéro de carte</label>
+                                <input type="text" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Nom sur la carte</label>
+                                <input type="text" class="form-control" placeholder="JOHN DOE">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Date d'expiration</label>
+                                <input type="text" class="form-control" placeholder="MM/AA" maxlength="5">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-control" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Terms and Conditions -->
+                <div class="form-card">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            J'accepte les <a href="#" class="text-primary">conditions générales de vente</a> et la <a href="#" class="text-primary">politique de confidentialité</a>
+                        </label>
+                    </div>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="newsletter">
+                        <label class="form-check-label" for="newsletter">
+                            Je souhaite recevoir les offres et actualités de Grow With Green
+                        </label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="order-summary-card">
+                <h4 class="mb-4 pb-3 border-bottom">
+                    <i class="fas fa-receipt me-2 text-primary"></i>
+                    Récapitulatif
+                </h4>
+                
+                <!-- Order Items -->
+                <div class="mb-4">
+                    <h6 class="text-muted mb-3">Articles (3)</h6>
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://via.placeholder.com/60" class="rounded me-3" alt="Produit">
+                        <div class="flex-grow-1">
+                            <p class="mb-0 fw-bold">Courge Premium</p>
+                            <small class="text-muted">2 kg × 2500 FCFA</small>
+                        </div>
+                        <span class="fw-bold">5000 FCFA</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://via.placeholder.com/60" class="rounded me-3" alt="Produit">
+                        <div class="flex-grow-1">
+                            <p class="mb-0 fw-bold">Gombo Frais</p>
+                            <small class="text-muted">1.5 kg × 1500 FCFA</small>
+                        </div>
+                        <span class="fw-bold">2250 FCFA</span>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <!-- Price Breakdown -->
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Sous-total</span>
+                    <span>7250 FCFA</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Livraison (Abidjan)</span>
+                    <span>1000 FCFA</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Remise</span>
+                    <span class="text-danger">- 0 FCFA</span>
+                </div>
+                
+                <hr class="my-3">
+                
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="mb-0">Total à payer</h5>
+                    <h4 class="mb-0 text-primary">8250 FCFA</h4>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" form="checkoutForm" class="btn btn-primary btn-lg rounded-pill py-3">
+                        <i class="fas fa-lock me-2"></i>Confirmer et payer
+                    </button>
+                    <a href="{% url 'boutique:voir_panier' %}" class="btn btn-outline-secondary rounded-pill">
+                        <i class="fas fa-arrow-left me-2"></i>Retour au panier
+                    </a>
+                </div>
+                
+                <!-- Security Info -->
+                <div class="mt-4 p-3 bg-light rounded text-center">
+                    <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                    <p class="mb-1 small fw-bold">Paiement 100% sécurisé</p>
+                    <p class="mb-0 text-muted small">Vos données sont cryptées et protégées</p>
+                </div>
+                
+                <!-- Delivery Info -->
+                <div class="mt-3 p-3 border rounded">
+                    <h6 class="mb-3"><i class="fas fa-truck me-2 text-primary"></i>Livraison estimée</h6>
+                    <p class="mb-2"><i class="far fa-calendar me-2"></i>24-48 heures</p>
+                    <p class="mb-0 text-muted small">Livraison du lundi au samedi</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Trust Badges -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-3">
+                <i class="fas fa-lock fa-3x text-primary mb-3"></i>
+                <h6>Paiement Sécurisé</h6>
+                <p class="text-muted small mb-0">Transactions SSL cryptées</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-shipping-fast fa-3x text-primary mb-3"></i>
+                <h6>Livraison Rapide</h6>
+                <p class="text-muted small mb-0">24-48h dans toute la CI</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-undo fa-3x text-primary mb-3"></i>
+                <h6>Satisfaction Garantie</h6>
+                <p class="text-muted small mb-0">Qualité contrôlée</p>
+            </div>
+            <div class="col-md-3">
+                <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                <h6>Support Client</h6>
+                <p class="text-muted small mb-0">Disponible 7j/7</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectPayment(method) {
+    document.getElementById(method).checked = true;
+    
+    // Hide all payment details
+    document.getElementById('mobile-money-details').style.display = 'none';
+    document.getElementById('carte-details').style.display = 'none';
+    
+    // Remove active class from all payment methods
+    document.querySelectorAll('.payment-method').forEach(el => {
+        el.classList.remove('active');
+    });
+    
+    // Add active class to selected payment method
+    event.currentTarget.classList.add('active');
+    
+    // Show selected payment details
+    if (method === 'mobile-money') {
+        document.getElementById('mobile-money-details').style.display = 'block';
+    } else if (method === 'carte') {
+        document.getElementById('carte-details').style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

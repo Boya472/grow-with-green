@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notifications - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .notification-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        border-left: 5px solid transparent;
+    }
+    
+    .notification-card.unread {
+        border-left-color: #667eea;
+        background-color: #f8f9ff;
+    }
+    
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+    }
+    
+    .notification-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-right: 15px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold mb-3">Notifications</h1>
+            <p class="fs-5">Restez informé de vos activités</p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Header avec actions -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="mb-0">
+                <i class="fas fa-bell me-2 text-warning"></i>
+                Mes notifications
+                {% if notifications_non_lues > 0 %}
+                <span class="badge bg-danger ms-2">{{ notifications_non_lues }} non lues</span>
+                {% endif %}
+            </h4>
+        </div>
+        <div>
+            <a href="{% url 'accounts:marquer_tout_lu' %}" class="btn btn-outline-secondary rounded-pill">
+                <i class="fas fa-check-double me-2"></i>Tout marquer comme lu
+            </a>
+        </div>
+    </div>
+    
+    <!-- Notifications système -->
+    {% if notifications %}
+    <div class="mb-5">
+        <h5 class="mb-3">
+            <i class="fas fa-bell me-2 text-primary"></i>
+            Notifications système
+        </h5>
+        
+        {% for notification in notifications %}
+        <a href="{% if notification.lien %}{{ notification.lien }}{% else %}#{% endif %}" class="text-decoration-none">
+            <div class="notification-card {% if not notification.lu %}unread{% endif %}">
+                <div class="d-flex align-items-start">
+                    <div class="notification-icon 
+                        {% if notification.type == 'COMMANDE' %}bg-primary bg-opacity-10 text-primary
+                        {% elif notification.type == 'LIVRAISON' %}bg-success bg-opacity-10 text-success
+                        {% elif notification.type == 'PROMO' %}bg-danger bg-opacity-10 text-danger
+                        {% elif notification.type == 'ALERTE' %}bg-warning bg-opacity-10 text-warning
+                        {% else %}bg-info bg-opacity-10 text-info{% endif %}">
+                        <i class="fas fa-
+                            {% if notification.type == 'COMMANDE' %}shopping-cart
+                            {% elif notification.type == 'LIVRAISON' %}truck
+                            {% elif notification.type == 'PROMO' %}tag
+                            {% elif notification.type == 'ALERTE' %}exclamation-triangle
+                            {% else %}info-circle{% endif %}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h6 class="fw-bold mb-1">{{ notification.titre }}</h6>
+                            <small class="text-muted">{{ notification.date_creation|date:"d/m/Y H:i" }}</small>
+                        </div>
+                        <p class="text-muted mb-2">{{ notification.message }}</p>
+                        {% if not notification.lu %}
+                        <a href="{% url 'accounts:marquer_lu' notification.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-check me-1"></i>Marquer comme lu
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Commandes récentes -->
+    {% if commandes_recentes %}
+    <div class="mb-5">
+        <h5 class="mb-3">
+            <i class="fas fa-shopping-bag me-2 text-primary"></i>
+            Dernières commandes
+        </h5>
+        
+        {% for commande in commandes_recentes %}
+        <div class="notification-card">
+            <div class="d-flex align-items-start">
+                <div class="notification-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="fas fa-{% if commande.statut == 'LIVREE' %}check-circle{% elif commande.statut == 'EN_COURS' %}truck{% else %}clock{% endif %}"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <h6 class="fw-bold mb-1">
+                            Commande #{{ commande.reference|default:commande.pk }}
+                            {% if commande.statut == 'LIVREE' %}
+                            <span class="badge bg-success ms-2">Livrée</span>
+                            {% elif commande.statut == 'EN_COURS' %}
+                            <span class="badge bg-warning text-dark ms-2">En cours</span>
+                            {% elif commande.statut == 'ANNULEE' %}
+                            <span class="badge bg-danger ms-2">Annulée</span>
+                            {% endif %}
+                        </h6>
+                        <small class="text-muted">{{ commande.date_commande|date:"d/m/Y H:i" }}</small>
+                    </div>
+                    <p class="text-muted mb-2">
+                        {% with items_count=commande.items.count %}
+                            {{ items_count }} article{{ items_count|pluralize:"s" }}
+                        {% endwith %}
+                        • Total: {{ commande.montant_total|default:0 }} FCFA
+                    </p>
+                    {% if commande.pk %}
+                    <a href="{% url 'commandes:detail_commande' commande.pk %}" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-eye me-1"></i>Voir les détails
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Si aucune notification -->
+    {% if not notifications and not commandes_recentes %}
+    <div class="empty-state">
+        <i class="fas fa-bell fa-5x text-muted mb-4 opacity-25"></i>
+        <h3 class="text-muted">Aucune notification</h3>
+        <p class="text-muted">Vous serez informé ici de vos activités récentes</p>
+        <a href="{% url 'boutique:catalogue' %}" class="btn btn-primary rounded-pill px-4">
+            <i class="fas fa-store me-2"></i>Faites vos achats
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

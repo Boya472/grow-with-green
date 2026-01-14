@@ -1,0 +1,355 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Commande {{ commande.numero_commande }} - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .order-info-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+    
+    .status-timeline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        margin: 40px 0;
+    }
+    
+    .status-timeline::before {
+        content: '';
+        position: absolute;
+        top: 30px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #e0e0e0;
+        z-index: 1;
+    }
+    
+    .status-step {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        flex: 1;
+    }
+    
+    .status-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        border: 3px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        font-size: 24px;
+        color: #999;
+        transition: all 0.3s ease;
+    }
+    
+    .status-step.completed .status-icon {
+        background: #28a745;
+        border-color: #28a745;
+        color: white;
+    }
+    
+    .status-step.active .status-icon {
+        background: #667eea;
+        border-color: #667eea;
+        color: white;
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(102,126,234,0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(102,126,234,0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(102,126,234,0);
+        }
+    }
+    
+    .product-item {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .product-item:last-child {
+        border-bottom: none;
+    }
+    
+    .product-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-right: 20px;
+    }
+    
+    .invoice-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: transform 0.3s ease;
+    }
+    
+    .invoice-btn:hover {
+        transform: scale(1.05);
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-5 fw-bold mb-3">Commande {{ commande.numero_commande }}</h1>
+            <p class="fs-5">Détails de votre commande</p>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'commandes:mes_commandes' %}">Mes Commandes</a></li>
+            <li class="breadcrumb-item active">{{ commande.numero_commande }}</li>
+        </ol>
+    </nav>
+    
+    <div class="row g-4">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Order Status Timeline -->
+            <div class="order-info-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-truck me-2 text-primary"></i>
+                    Suivi de commande
+                </h4>
+                
+                <div class="status-timeline">
+                    <div class="status-step {% if commande.date_commande %}completed{% endif %}">
+                        <div class="status-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <p class="mb-0 fw-bold">Commandé</p>
+                        <small class="text-muted">{{ commande.date_commande|date:"d/m/Y" }}</small>
+                    </div>
+                    
+                    <div class="status-step {% if commande.date_confirmation %}completed{% elif commande.statut == 'CONFIRMEE' %}active{% endif %}">
+                        <div class="status-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <p class="mb-0 fw-bold">Confirmé</p>
+                        <small class="text-muted">{% if commande.date_confirmation %}{{ commande.date_confirmation|date:"d/m/Y" }}{% else %}--{% endif %}</small>
+                    </div>
+                    
+                    <div class="status-step {% if commande.date_expedition %}completed{% elif commande.statut == 'EXPEDIEE' %}active{% endif %}">
+                        <div class="status-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <p class="mb-0 fw-bold">Expédié</p>
+                        <small class="text-muted">{% if commande.date_expedition %}{{ commande.date_expedition|date:"d/m/Y" }}{% else %}--{% endif %}</small>
+                    </div>
+                    
+                    <div class="status-step {% if commande.date_livraison %}completed{% elif commande.statut == 'LIVREE' %}active{% endif %}">
+                        <div class="status-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <p class="mb-0 fw-bold">Livré</p>
+                        <small class="text-muted">{% if commande.date_livraison %}{{ commande.date_livraison|date:"d/m/Y" }}{% else %}--{% endif %}</small>
+                    </div>
+                </div>
+                
+                {% if commande.statut == 'EXPEDIEE' %}
+                <div class="alert alert-info rounded-3 mt-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>En cours de livraison</strong> - Votre commande arrive sous peu. Livraison estimée : {{ commande.zone_livraison.delai_livraison }} jour(s)
+                </div>
+                {% elif commande.statut == 'LIVREE' %}
+                <div class="alert alert-success rounded-3 mt-4">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Commande livrée</strong> - Nous espérons que vous êtes satisfait de vos produits !
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- Order Items -->
+            <div class="order-info-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-box-open me-2 text-primary"></i>
+                    Articles commandés ({{ commande.items.count }})
+                </h4>
+                
+                {% for item in commande.items.all %}
+                <div class="product-item">
+                    {% if item.produit.image %}
+                    <img src="{{ item.produit.image.url }}" alt="{{ item.produit.nom }}" class="product-image">
+                    {% else %}
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="fas fa-leaf fa-2x text-success opacity-25"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">{{ item.produit.nom }}</h6>
+                        <p class="text-muted mb-1 small">{{ item.quantite }} kg × {{ item.prix_unitaire }} FCFA</p>
+                        <span class="badge bg-light text-dark">{{ item.produit.legume.get_nom_display }}</span>
+                    </div>
+                    
+                    <div class="text-end">
+                        <h5 class="mb-0 text-primary">{{ item.sous_total }} FCFA</h5>
+                        {% if commande.statut == 'LIVREE' %}
+                        <a href="{% url 'boutique:detail_produit' item.produit.pk %}" class="btn btn-sm btn-outline-primary rounded-pill mt-2">
+                            <i class="fas fa-redo me-1"></i>Racheter
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Delivery Address -->
+            <div class="order-info-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                    Adresse de livraison
+                </h4>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong>{{ commande.user.get_full_name }}</strong>
+                        </p>
+                        <p class="mb-2 text-muted">{{ commande.adresse_livraison }}</p>
+                        <p class="mb-2 text-muted">
+                            <i class="fas fa-phone me-2"></i>{{ commande.user.telephone }}
+                        </p>
+                        <p class="mb-0 text-muted">
+                            <i class="fas fa-envelope me-2"></i>{{ commande.user.email }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="bg-light rounded p-3">
+                            <p class="mb-2"><strong>Zone de livraison</strong></p>
+                            <p class="mb-0">{{ commande.zone_livraison.nom }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if commande.notes_client %}
+                <hr class="my-4">
+                <p class="mb-2"><strong>Instructions de livraison :</strong></p>
+                <p class="text-muted mb-0">{{ commande.notes_client }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Order Summary -->
+            <div class="order-info-card sticky-top" style="top: 110px;">
+                <h4 class="mb-4">
+                    <i class="fas fa-file-invoice me-2 text-primary"></i>
+                    Récapitulatif
+                </h4>
+                
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Sous-total</span>
+                    <span class="fw-bold">{{ commande.montant_produits }} FCFA</span>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="text-muted">Frais de livraison</span>
+                    <span class="fw-bold">{{ commande.frais_livraison }} FCFA</span>
+                </div>
+                
+                <hr class="my-3">
+                
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="mb-0">Total</h5>
+                    <h4 class="mb-0 text-primary">{{ commande.montant_total }} FCFA</h4>
+                </div>
+                
+                <div class="bg-light rounded p-3 mb-4">
+                    <p class="mb-2"><strong>Mode de paiement</strong></p>
+                    <p class="mb-0">
+                        {% if commande.mode_paiement == 'ORANGE_MONEY' %}
+                            <i class="fas fa-mobile-alt me-2 text-warning"></i>Orange Money
+                        {% elif commande.mode_paiement == 'MTN_MONEY' %}
+                            <i class="fas fa-mobile-alt me-2 text-warning"></i>MTN Money
+                        {% elif commande.mode_paiement == 'MOOV_MONEY' %}
+                            <i class="fas fa-mobile-alt me-2 text-info"></i>Moov Money
+                        {% elif commande.mode_paiement == 'WAVE' %}
+                            <i class="fas fa-mobile-alt me-2 text-success"></i>Wave
+                        {% else %}
+                            <i class="fas fa-credit-card me-2"></i>Carte Bancaire
+                        {% endif %}
+                    </p>
+                    <p class="mb-0 mt-2">
+                        {% if commande.paiement_valide %}
+                            <span class="badge bg-success">
+                                <i class="fas fa-check me-1"></i>Paiement validé
+                            </span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-clock me-1"></i>En attente
+                            </span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'commandes:telecharger_facture' commande.numero_commande %}" class="invoice-btn">
+                       <i class="fas fa-download me-2"></i>Télécharger la facture
+                    </a>
+                    {% if commande.statut == 'LIVREE' %}
+                    <button class="btn btn-outline-primary rounded-pill">
+                        <i class="fas fa-star me-2"></i>Laisser un avis
+                    </button>
+                    {% endif %}
+                    
+                    <a href="{% url 'commandes:mes_commandes' %}" class="btn btn-outline-secondary rounded-pill">
+                        <i class="fas fa-arrow-left me-2"></i>Retour aux commandes
+                    </a>
+                </div>
+                
+                <!-- Customer Support -->
+                <hr class="my-4">
+                <div class="text-center">
+                    <p class="text-muted mb-3"><small>Besoin d'aide ?</small></p>
+                    <a href="#" class="btn btn-sm btn-outline-primary rounded-pill">
+                        <i class="fas fa-headset me-2"></i>Contacter le support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

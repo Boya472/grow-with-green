@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mes Commandes - Grow With Green{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 100px 0 60px;
+        margin-top: 90px;
+        color: white;
+    }
+    
+    .order-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+        border-left: 5px solid #667eea;
+    }
+    
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .status-badge {
+        padding: 8px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    
+    .status-EN_ATTENTE {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-CONFIRMEE {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .status-EN_PREPARATION {
+        background: #cce5ff;
+        color: #004085;
+    }
+    
+    .status-EXPEDIEE {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-LIVREE {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-ANNULEE {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 10px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e0e0e0;
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-bottom: 20px;
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        left: -24px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #28a745;
+        border: 3px solid white;
+        box-shadow: 0 0 0 2px #28a745;
+    }
+    
+    .timeline-dot.pending {
+        background: #e0e0e0;
+        box-shadow: 0 0 0 2px #e0e0e0;
+    }
+    
+    .filter-tabs {
+        background: white;
+        border-radius: 15px;
+        padding: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    }
+    
+    .filter-tab {
+        border: none;
+        background: transparent;
+        padding: 12px 25px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+    }
+    
+    .filter-tab.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+    }
+    
+    .empty-state-icon {
+        font-size: 100px;
+        opacity: 0.2;
+        color: #667eea;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="display-4 fw-bold mb-3">Mes Commandes</h1>
+            <p class="fs-5">Suivez l'état de vos commandes en temps réel</p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center">
+                    <li class="breadcrumb-item"><a href="{% url 'index' %}" class="text-white">Accueil</a></li>
+                    <li class="breadcrumb-item active text-white">Mes Commandes</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <div class="d-flex flex-wrap gap-2">
+            <button class="filter-tab active">
+                <i class="fas fa-list me-2"></i>Toutes ({{ commandes.count }})
+            </button>
+            <button class="filter-tab">
+                <i class="fas fa-clock me-2"></i>En attente
+            </button>
+            <button class="filter-tab">
+                <i class="fas fa-check-circle me-2"></i>Confirmées
+            </button>
+            <button class="filter-tab">
+                <i class="fas fa-truck me-2"></i>Expédiées
+            </button>
+            <button class="filter-tab">
+                <i class="fas fa-box-open me-2"></i>Livrées
+            </button>
+        </div>
+    </div>
+    
+    {% if commandes %}
+    <!-- Orders List -->
+    <div class="row">
+        {% for commande in commandes %}
+        <div class="col-12">
+            <div class="order-card">
+                <div class="row align-items-center">
+                    <!-- Order Info -->
+                    <div class="col-lg-3 col-md-6 mb-3 mb-lg-0">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                                <i class="fas fa-receipt fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1 fw-bold">{{ commande.numero_commande }}</h6>
+                                <small class="text-muted">
+                                    <i class="far fa-calendar me-1"></i>
+                                    {{ commande.date_commande|date:"d/m/Y" }}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="col-lg-2 col-md-6 mb-3 mb-lg-0 text-center">
+                        <span class="status-badge status-{{ commande.statut }}">
+                            {% if commande.statut == 'EN_ATTENTE' %}
+                                <i class="fas fa-clock me-1"></i>En attente
+                            {% elif commande.statut == 'CONFIRMEE' %}
+                                <i class="fas fa-check me-1"></i>Confirmée
+                            {% elif commande.statut == 'EN_PREPARATION' %}
+                                <i class="fas fa-box me-1"></i>En préparation
+                            {% elif commande.statut == 'EXPEDIEE' %}
+                                <i class="fas fa-truck me-1"></i>Expédiée
+                            {% elif commande.statut == 'LIVREE' %}
+                                <i class="fas fa-box-open me-1"></i>Livrée
+                            {% else %}
+                                <i class="fas fa-times me-1"></i>Annulée
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <!-- Items Count -->
+                    <div class="col-lg-2 col-md-6 mb-3 mb-lg-0 text-center">
+                        <p class="text-muted mb-1"><small>Articles</small></p>
+                        <h6 class="mb-0">{{ commande.items.count }} produit{{ commande.items.count|pluralize }}</h6>
+                    </div>
+                    
+                    <!-- Total Amount -->
+                    <div class="col-lg-2 col-md-6 mb-3 mb-lg-0 text-center">
+                        <p class="text-muted mb-1"><small>Montant total</small></p>
+                        <h5 class="mb-0 text-primary">{{ commande.montant_total }} FCFA</h5>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="col-lg-3 text-center text-lg-end">
+                        <a href="{% url 'commandes:detail_commande' commande.numero_commande %}" class="btn btn-primary rounded-pill px-4 mb-2">
+                            <i class="fas fa-eye me-2"></i>Voir détails
+                        </a>
+                        {% if commande.statut == 'LIVREE' %}
+                        <button class="btn btn-outline-success rounded-pill px-4">
+                            <i class="fas fa-redo me-2"></i>Recommander
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Order Timeline (for shipped orders) -->
+                {% if commande.statut in 'EXPEDIEE,LIVREE' %}
+                <hr class="my-4">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <small class="text-muted">{{ commande.date_commande|date:"d/m/Y H:i" }}</small>
+                                <p class="mb-0 fw-bold">Commande passée</p>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <small class="text-muted">{{ commande.date_confirmation|date:"d/m/Y H:i"|default:"--" }}</small>
+                                <p class="mb-0 fw-bold">Commande confirmée</p>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <small class="text-muted">{{ commande.date_expedition|date:"d/m/Y H:i"|default:"--" }}</small>
+                                <p class="mb-0 fw-bold">Expédition en cours</p>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-dot {% if commande.statut != 'LIVREE' %}pending{% endif %}"></div>
+                                <small class="text-muted">{{ commande.date_livraison|date:"d/m/Y H:i"|default:"En attente" }}</small>
+                                <p class="mb-0 fw-bold">Livraison</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link rounded-pill me-2">Précédent</a>
+            </li>
+            <li class="page-item active">
+                <a class="page-link rounded-circle">1</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link rounded-circle">2</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link rounded-pill ms-2">Suivant</a>
+            </li>
+        </ul>
+    </nav>
+    
+    {% else %}
+    <!-- Empty State -->
+    <div class="empty-state">
+        <i class="fas fa-shopping-bag empty-state-icon"></i>
+        <h3 class="mt-4 mb-3">Aucune commande pour le moment</h3>
+        <p class="text-muted mb-4">Vous n'avez pas encore passé de commande</p>
+        <a href="{% url 'boutique:catalogue' %}" class="btn btn-primary btn-lg rounded-pill px-5">
+            <i class="fas fa-shopping-cart me-2"></i>Commencer mes achats
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Help Section -->
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-headset fa-3x text-primary mb-3"></i>
+                    <h5 class="mb-3">Besoin d'aide ?</h5>
+                    <p class="text-muted mb-3">Notre équipe est là pour vous</p>
+                    <a href="#" class="btn btn-outline-primary rounded-pill">Contactez-nous</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-undo fa-3x text-primary mb-3"></i>
+                    <h5 class="mb-3">Retours & Remboursements</h5>
+                    <p class="text-muted mb-3">Politique de retour simple</p>
+                    <a href="#" class="btn btn-outline-primary rounded-pill">En savoir plus</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4">
+                    <i class="fas fa-truck fa-3x text-primary mb-3"></i>
+                    <h5 class="mb-3">Suivi de livraison</h5>
+                    <p class="text-muted mb-3">Suivez votre colis en temps réel</p>
+                    <a href="#" class="btn btn-outline-primary rounded-pill">Suivre mon colis</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
